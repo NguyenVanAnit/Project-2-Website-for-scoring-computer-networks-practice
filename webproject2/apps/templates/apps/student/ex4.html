@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="{% url 'ex4' %}" method="post">
+        {% csrf_token %}
+        
+        <div>
+            <h3>Câu 1</h3>
+            <label for="">STT</label>
+            <input type="text" name="stt">
+            <label for="">IP nguồn</label>
+            <input type="text" name="souIP">
+            <label for="">IP đích</label>
+            <input type="text" name="desIP">
+            <label for="">Cổng nguồn</label>
+            <input type="text" name="souPort">
+            <label for="">Cổng đích</label>
+            <input type="text" name="desPort"><br>
+
+            <label for="">Gói tin được đóng gói vào giao thức của tầng mạng</label><br>
+            <input type="radio" name="floor" value="1">
+            <label for="">Tầng vật lý</label>
+            <input type="radio" name="floor" value="2">
+            <label for="">Tầng Data Link</label>
+            <input type="radio" name="floor" value="3">
+            <label for="">Tầng IP</label>
+            <input type="radio" name="floor" value="4">
+            <label for="">Tầng giao vận</label>
+            <input type="radio" name="floor" value="5">
+            <label for="">Tầng ứng dụng</label>
+        </div>
+
+        <div>
+            <h3>Câu 2</h3>
+            <label for="">STT</label>
+            <input type="text" name="stt2"><br>
+            <label for="">Lý do</label><br>
+            <textarea name="reason2" id="" rows="4" cols="50"></textarea>
+            <br>
+            <label for="">Máy đích có biết thành công hay không</label><br>
+            <input type="radio" name="success2" value="0">
+            <label for="">Không</label>
+            <input type="radio" name="success2" value="1">
+            <label for="">Có</label>
+            <br>
+            <label for="">Lý do</label><br>
+            <textarea name="reason22" id="" rows="4" cols="50"></textarea>
+        </div>
+
+        <input type="submit" name="submit" value="submit">
+    </form>
+</body>
+</html>
