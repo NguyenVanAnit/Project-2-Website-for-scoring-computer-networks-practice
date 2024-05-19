@@ -5,6 +5,16 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import json
 import os
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import default_storage
+from scapy.all import rdpcap
+from django.conf import settings
+
+from scapy.utils import RawPcapReader
+from scapy.layers.l2 import Ether
+from scapy.layers.inet import IP, TCP
+
+from .forms import UploadFileForm
 
 # Create your views here.
 class Login(View):
@@ -81,6 +91,61 @@ class submitEx4(View):
         
         return HttpResponse("Data saved to JSON file")
 
+class upload_pcap(View):
+    def get(self, request):
+        form = UploadFileForm(request.POST, request.FILES)
+        return render(request, 'apps/student/upload_pcap.html', {'form': form})
+    
+    def post(self, request):
+        pcap_file = request.FILES['file']
+        if not pcap_file:
+            return HttpResponse("No file uploaded")        
+        file_path = default_storage.save(pcap_file.name, pcap_file)
+        full_path = os.path.join(settings.MEDIA_ROOT, file_path)
 
+        # Đọc file PCAP và chuyển thành JSON
+        packets = rdpcap(full_path)
+        data_list = []
+        for packet in packets:
+            packet_dict = packet.fields
+            data_list.append(packet_dict)
+        
+        json_file_path = os.path.join(settings.BASE_DIR, 'data', 'pcap_data.json')
+        with open(json_file_path, 'w') as json_file:
+            json.dump(data_list, json_file)
 
+        return HttpResponse('Successful')
+        
 
+# @csrf_exempt
+# def upload_pcap(request):
+#     if request.method == 'POST':
+#         if 'pcap_file' not in request.FILES:
+#             print("No file found in request.FILES")
+#             return HttpResponse("No file uploaded")
+        
+#         print("File found in request.FILES")
+#         pcap_file = request.FILES['pcap_file']
+#         print(f"Uploaded file name: {pcap_file.name}")
+        
+#         file_path = default_storage.save(pcap_file.name, pcap_file)
+#         full_path = os.path.join(settings.MEDIA_ROOT, file_path)
+#         print(f"Saved file path: {full_path}")
+
+#         # Đọc file PCAP và chuyển thành JSON
+#         packets = rdpcap(full_path)
+#         data_list = []
+#         for packet in packets:
+#             packet_dict = packet.fields
+#             data_list.append(packet_dict)
+
+#         json_file_path = os.path.join(settings.DATA_DIR, 'pcap_data.json')
+#         with open(json_file_path, 'w') as json_file:
+#             json.dump(data_list, json_file)
+
+#         return HttpResponse(f"Data saved to JSON file at {json_file_path}")
+#     else:
+#         return HttpResponse("Invalid request")
+
+# def pcap(request):
+#     return render(request, 'apps/student/upload_pcap.html')
