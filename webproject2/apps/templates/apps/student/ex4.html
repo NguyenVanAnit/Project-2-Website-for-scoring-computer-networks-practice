@@ -11,18 +11,18 @@
         
         <div>
             <h3>Câu 1</h3>
-            <label for="">STT</label>
-            <input type="text" name="stt">
-            <label for="">IP nguồn</label>
-            <input type="text" name="souIP">
-            <label for="">IP đích</label>
-            <input type="text" name="desIP">
-            <label for="">Cổng nguồn</label>
-            <input type="text" name="souPort">
-            <label for="">Cổng đích</label>
-            <input type="text" name="desPort"><br>
+            <label for="">STT gói tin (No.)</label>
+            <input type="number" name="stt" required><br>
+            <label for="">Địa chỉ IP nguồn</label>
+            <input type="text" name="souIP" required><br>
+            <label for="">Địa chỉ IP đích</label>
+            <input type="text" name="desIP" required><br>
+            <label for="">Số hiệu cổng nguồn</label>
+            <input type="number" name="souPort" required><br>
+            <label for="">Số hiệu cổng đích</label>
+            <input type="number" name="desPort" required><br>
 
-            <label for="">Gói tin được đóng gói vào giao thức của tầng mạng</label><br>
+            <label for="">Gói tin này được đóng gói vào gói tin của giao thức tầng mạng nào?</label><br>
             <input type="radio" name="floor" value="1">
             <label for="">Tầng vật lý</label>
             <input type="radio" name="floor" value="2">
@@ -37,12 +37,12 @@
 
         <div>
             <h3>Câu 2</h3>
-            <label for="">STT</label>
-            <input type="text" name="stt2"><br>
+            <label for="">STT gói tin</label>
+            <input type="number" name="stt2" required><br>
             <label for="">Lý do</label><br>
             <textarea name="reason2" id="" rows="4" cols="50"></textarea>
             <br>
-            <label for="">Máy đích có biết thành công hay không</label><br>
+            <label for="">Máy đích có thể biết được gói tin này đã được truyền thành công hay không?</label><br>
             <input type="radio" name="success2" value="0">
             <label for="">Không</label>
             <input type="radio" name="success2" value="1">
@@ -50,6 +50,42 @@
             <br>
             <label for="">Lý do</label><br>
             <textarea name="reason22" id="" rows="4" cols="50"></textarea>
+        </div>
+
+        <div>
+            <h3>Câu 4</h3>
+            <label for="">STT gói tin (No.):</label>
+            <input type="number" name="stt4" required><br>
+            <label for="">Địa chỉ IP bên khởi tạo</label>
+            <input type="text" name="souIP3" required><br>
+            <label for="">Địa chỉ IP bên đáp ứng</label>
+            <input type="text" name="desIP3" required><br>
+            <label for="">Số hiệu cổng ứng dụng bên khởi tạo</label>
+            <input type="number" name="souPort3" required><br>
+            <label for="">Số hiệu cổng ứng dụng bên đáp ứng</label>
+            <input type="number" name="desPort3" required><br>
+            <label for="">Sequence Number</label>
+            <input type="number" name="seq4" required><br>
+            <label for="">ACK Number</label>
+            <input type="number" name="ack4" required><br>
+            <label for="">Kích thước phần tiêu đề TCP (bytes)</label>
+            <input type="number" name="lenghttcp4" required><br>
+            <label for="">Kích thước phần dữ liệu (bytes)</label>
+            <input type="number" name="lenghtdata4" required><br>
+            <label for="">Các cờ được thiết lập</label>
+            <input type="text" name="flag4" required>
+            <br>
+            <label for="">Gói tin này được đóng gói vào gói tin của giao thức tầng mạng nào?</label><br>
+            <input type="radio" name="floor4" value="1">
+            <label for="">Tầng vật lý</label>
+            <input type="radio" name="floor4" value="2">
+            <label for="">Tầng Data Link</label>
+            <input type="radio" name="floor4" value="3">
+            <label for="">Tầng IP</label>
+            <input type="radio" name="floor4" value="4">
+            <label for="">Tầng giao vận</label>
+            <input type="radio" name="floor4" value="5">
+            <label for="">Tầng ứng dụng</label>
         </div>
 
         <input type="submit" name="submit" value="submit">
