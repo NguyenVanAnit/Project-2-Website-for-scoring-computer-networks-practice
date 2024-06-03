@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Danh sách bài tập của lớp {{ class_instance.name }}</h2>
+    
+    <!-- <h3>Danh sách bài tập</h3>
+    <ul>
+        {% for assignment in assignments %}
+            <li>
+                {{ assignment.name }} - Deadline: {{ assignment.deadline }}
+                {% if submissions.assignment.id %}
+                    - Score: {{ submissions.assignment.id.score }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul> -->
+
+    <h2>Lớp học: {{ class_obj.name }}</h2>
+    
+    <h3>Danh sách bài tập</h3>
+    <ul>
+        <!-- {% for assignment in assignments %}
+            <li>
+                {{ assignment.name }} - Deadline: {{ assignment.deadline }}
+                <a href="{% url 'assignment_detail' assignment.id %}">Bắt đầu làm bài</a>
+            </li>
+        {% endfor %} -->
+        {% for assignment in assignments %}
+            <li>
+                {{ assignment.name }} - Deadline: {{ assignment.deadline }}
+                {% if assignment.id in submissions %}
+                    <a href="{% url 'view_result' assignment.id %}">Xem kết quả</a>
+                {% else %}
+                    {% if assignment.deadline|date:"U" > now|date:"U" %}
+                        <a href="{% url 'assignment_detail' assignment.id %}">Bắt đầu làm bài</a>
+                    {% else %}
+                        <span>Đã qua deadline</span>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    <br>
+    <a href="{% url 'student_classes' %}">Back to Classes</a>
+
+    
+</body>
+</html>

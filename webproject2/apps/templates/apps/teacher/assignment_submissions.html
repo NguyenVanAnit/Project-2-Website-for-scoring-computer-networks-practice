@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Submissions</title>
+</head>
+<body>
+    <h1>Assignment: {{ assignment.name }}</h1>
+    <h2>Submissions</h2>
+    <ul>
+        {% for submission in submissions %}
+            <li>
+                <p>Student: {{ submission.student.username }}</p>
+                <p>Submission Time: {{ submission.submission_time }}</p>
+                <p>Score: {{ submission.score }}</p>
+                <!-- Add more details about the submission here -->
+            </li>
+        {% empty %}
+            <li>No submissions yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

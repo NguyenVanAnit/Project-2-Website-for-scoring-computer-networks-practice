@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>{{ class_instance.name }} ({{ class_instance.code }})</h1>
+
+    <h3>Danh sách bài tập</h3>
+    <ul>
+        {% for assignment in assignments %}
+            <li>
+                {{ assignment.name }} - Deadline: {{ assignment.deadline }}
+                <a href="{% url 'view_assignment_submissions' assignment.id %}">Xem bài làm của học sinh</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Form thêm bài tập -->
+    <h3>Thêm bài tập mới</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form2.as_p }}
+        <button type="submit" name="add_assignment">Thêm bài tập</button>
+    </form>
+
+    <h2>Add Student</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="add_student">Add Student</button>
+    </form>
+    
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Students</h2>
+    <ul>
+        {% for student in students %}
+            <li>
+                {{ student.username }} ({{ student.user_id }})
+                <a href="{% url 'view_student_assignments' student.id %}">Xem danh sách bài tập</a>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <a href="{% url 'list-classes' %}">Back to List Classes</a>
+</body>
+</html>

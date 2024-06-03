@@ -6,21 +6,22 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{% url 'ex4' %}" method="post">
+    <h2>Làm bài tập: {{ assignment.name }}</h2>
+    <form method="post">
         {% csrf_token %}
         
         <div>
             <h3>Câu 1</h3>
             <label for="">STT gói tin (No.)</label>
-            <input type="number" name="stt" required><br>
+            <input type="number" name="stt" ><br>
             <label for="">Địa chỉ IP nguồn</label>
-            <input type="text" name="souIP" required><br>
+            <input type="text" name="souIP" ><br>
             <label for="">Địa chỉ IP đích</label>
-            <input type="text" name="desIP" required><br>
+            <input type="text" name="desIP" ><br>
             <label for="">Số hiệu cổng nguồn</label>
-            <input type="number" name="souPort" required><br>
+            <input type="number" name="souPort" ><br>
             <label for="">Số hiệu cổng đích</label>
-            <input type="number" name="desPort" required><br>
+            <input type="number" name="desPort" ><br>
 
             <label for="">Gói tin này được đóng gói vào gói tin của giao thức tầng mạng nào?</label><br>
             <input type="radio" name="floor" value="1">
@@ -38,9 +39,9 @@
         <div>
             <h3>Câu 2</h3>
             <label for="">STT gói tin</label>
-            <input type="number" name="stt2" required><br>
+            <input type="number" name="stt2" ><br>
             <label for="">Lý do</label><br>
-            <textarea name="reason2" id="" rows="4" cols="50"></textarea>
+            <textarea name="reason21" id="" rows="4" cols="50"></textarea>
             <br>
             <label for="">Máy đích có thể biết được gói tin này đã được truyền thành công hay không?</label><br>
             <input type="radio" name="success2" value="0">
@@ -55,25 +56,25 @@
         <div>
             <h3>Câu 4</h3>
             <label for="">STT gói tin (No.):</label>
-            <input type="number" name="stt4" required><br>
+            <input type="number" name="stt4" ><br>
             <label for="">Địa chỉ IP bên khởi tạo</label>
-            <input type="text" name="souIP3" required><br>
+            <input type="text" name="souIP4" ><br>
             <label for="">Địa chỉ IP bên đáp ứng</label>
-            <input type="text" name="desIP3" required><br>
+            <input type="text" name="desIP4" ><br>
             <label for="">Số hiệu cổng ứng dụng bên khởi tạo</label>
-            <input type="number" name="souPort3" required><br>
+            <input type="number" name="souPort4" ><br>
             <label for="">Số hiệu cổng ứng dụng bên đáp ứng</label>
-            <input type="number" name="desPort3" required><br>
+            <input type="number" name="desPort4" ><br>
             <label for="">Sequence Number</label>
-            <input type="number" name="seq4" required><br>
+            <input type="number" name="seq4" ><br>
             <label for="">ACK Number</label>
-            <input type="number" name="ack4" required><br>
+            <input type="number" name="ack4" ><br>
             <label for="">Kích thước phần tiêu đề TCP (bytes)</label>
-            <input type="number" name="lenghttcp4" required><br>
+            <input type="number" name="lenghttcp4" ><br>
             <label for="">Kích thước phần dữ liệu (bytes)</label>
-            <input type="number" name="lenghtdata4" required><br>
+            <input type="number" name="lenghtdata4" ><br>
             <label for="">Các cờ được thiết lập</label>
-            <input type="text" name="flag4" required>
+            <input type="text" name="flag4" >
             <br>
             <label for="">Gói tin này được đóng gói vào gói tin của giao thức tầng mạng nào?</label><br>
             <input type="radio" name="floor4" value="1">
@@ -86,6 +87,67 @@
             <label for="">Tầng giao vận</label>
             <input type="radio" name="floor4" value="5">
             <label for="">Tầng ứng dụng</label>
+        </div>
+
+        <div>
+            <h3>Câu 5</h3>
+            <label for="">STT gói tin (No.):</label>
+            <input type="number" name="stt5" ><br>
+            <label for="">Địa chỉ IP nguồn</label>
+            <input type="text" name="souIP5" ><br>
+            <label for="">Địa chỉ IP đích</label>
+            <input type="text" name="desIP5" ><br>
+            <label for="">Số hiệu cổng nguồn</label>
+            <input type="number" name="souPort5" ><br>
+            <label for="">Số hiệu cổng đích</label>
+            <input type="number" name="desPort5" ><br>
+            <label for="">Sequence Number</label>
+            <input type="number" name="seq5" ><br>
+            <label for="">ACK Number</label>
+            <input type="number" name="ack5" ><br>
+            <label for="">Kích thước phần tiêu đề TCP (bytes)</label>
+            <input type="number" name="lenghttcp5" ><br>
+            <label for="">Kích thước phần dữ liệu (bytes)</label>
+            <input type="number" name="lenghtdata5" ><br>
+            <label for="">Các cờ được thiết lập</label>
+            <input type="text" name="flag5" >
+            <br>
+            <label for="">Có thể kết luận chắc chắn Web Server đã nhận thành công gói tin ở bước 4 hay không?</label><br>
+            <input type="radio" name="success5" value="0">
+            <label for="">Không</label>
+            <input type="radio" name="success5" value="1">
+            <label for="">Có</label>
+            <br>
+            <label for="">Tại sao?</label><br>
+            <textarea name="reason5" id="" rows="4" cols="50"></textarea>
+        </div>
+
+        <div>
+            <h3>Câu 6</h3>
+            <label for="">Gói tin tiếp theo chứa dữ liệu của file được Web Browser gửi đi có giá trị Sequence Number là bao nhiêu?</label>
+            <input type="number" name="seq6">
+        </div>
+
+        <div>
+            <h3>Câu 7</h3>
+            <label for="">STT gói tin (No.):</label>
+            <input type="number" name="stt7" ><br>
+            <label for="">Giá trị nhị phân của trường Flags</label>
+            <input type="text" name="nhiphan7" ><br>
+            <label for="">Các cờ được thiết lập</label>
+            <input type="text" name="flag7" ><br>
+            <label for="">Sequence Number</label>
+            <input type="number" name="seq7" ><br>
+            <label for="">ACK Number</label>
+            <input type="number" name="ack7" ><br>
+            <label for="">Kích thước phần dữ liệu (bytes)</label>
+            <input type="number" name="lenghtdata7" ><br>
+        </div>
+
+        <div>
+            <h3>Câu 8</h3>
+            <label for=""> Tính thông lượng trung bình trên liên kết TCP trong quá trình upload file lên máy chủ</label>
+            <input type="number" name="bps8">
         </div>
 
         <input type="submit" name="submit" value="submit">

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Assignments</title>
+</head>
+<body>
+    <h1>Assignments for {{ user.username }}</h1>
+    <ul>
+        {% for assignment in assignments %}
+            <li>
+                <p>Assignment: {{ assignment.name }}</p>
+                <p>Deadline: {{ assignment.deadline }}</p>
+                <!-- Add more details about the assignment here -->
+            </li>
+        {% empty %}
+            <li>No assignments yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

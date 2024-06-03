@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Result for {{ assignment.name }}</h2>
+    <p>Score: {{ submission.score }}</p>
+    <h3>Answers:</h3>
+    <ul>
+        <li>STT: {{ answers.stt }}</li>
+        <li>Source IP: {{ answers.souIP }}</li>
+        <li>Destination IP: {{ answers.desIP }}</li>
+        <li>Source Port: {{ answers.souPort }}</li>
+        <li>Destination Port: {{ answers.desPort }}</li>
+        <li>Floor: {{ answers.floor }}</li>
+    </ul>
+    <br>
+    <a href="{% url 'student_class_detail' assignment.class_id.id %}">Back to Class</a>
+</body>
+</html>

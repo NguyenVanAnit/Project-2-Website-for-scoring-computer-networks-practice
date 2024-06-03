@@ -6,12 +6,12 @@
     <title>Document</title>
 </head>
 <body>
-    
-    <h2>Nộp bài tập: {{ assignment.name }}</h2>
-    <form method="post" enctype="multipart/form-data">
+    <h1>Create a New Class</h1>
+    <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Nộp</button>
+        <button type="submit">Create Class</button>
     </form>
+    <a href="{% url 'home-teacher' %}">Back to Home</a>
 </body>
 </html>

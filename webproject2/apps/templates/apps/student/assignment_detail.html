@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>{{ assignment.name }}</h2>
+    <p>Deadline: {{ assignment.deadline }}</p>
+    
+    {% if submission %}
+        <p>Đã nộp: {{ submission.submission_time }}</p>
+        {% if can_view_score %}
+            <p>Điểm: {{ submission.score }}</p>
+        {% endif %}
+    {% endif %}
+    
+    <a href="{% url 'upload' assignment.id %}">Bắt đầu làm bài</a><br>
+    <a href="#">Xem kết quả bài thi</a> <!-- Link này sẽ cần xử lý thêm -->
+</body>
+</html>

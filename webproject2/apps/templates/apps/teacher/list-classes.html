@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Danh sách lớp học</h2>
+    <ul>
+        {% csrf_token %}
+        {% for class in classes %}
+            <li>
+                <span>{{class.name}} : {{class.code}}</span>
+                <a href="{% url 'class_detail' class.id %}">
+                    <button>Vào lớp</button>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <a href="{% url 'home-teacher' %}">Back to Home</a>
+</body>
+</html>
