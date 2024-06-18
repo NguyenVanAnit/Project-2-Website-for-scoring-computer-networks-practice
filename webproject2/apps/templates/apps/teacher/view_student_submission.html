@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết bài nộp của học sinh</title>
+</head>
+<body>
+    {% load custom_tags %}
+
+    <h2>Bài nộp của học sinh: {{ submission.student.username }}</h2>
+    <h3>Bài tập: {{ assignment.name }}</h3>
+    
+    <h3>Câu trả lời của học sinh:</h3>
+    <ul>
+        {% for question, answer in submission.answers.items %}
+            <li>
+                {{ question }}: {{ answer }}
+                {% if show_score %}
+                    {% if question|is_answer_correct:answer %}
+                        <span style="color: green;">✔️</span>
+                    {% else %}
+                        <span style="color: red;">❌</span>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% if show_score %}
+        <p>Điểm của học sinh: {{ submission.score }}</p>
+    {% endif %}
+    
+    <br>
+    {% comment %} <a href="{% url 'class_detail' assignment.class_instance.id %}">Quay lại lớp học</a> {% endcomment %}
+</body>
+</html>

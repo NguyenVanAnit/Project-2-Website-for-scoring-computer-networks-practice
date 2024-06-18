@@ -3,36 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'apps/styles.css' %}">
+    <style>
+        .errorlist {
+            color: #ff0000;
+        }
+    </style>
 </head>
 <body>
-    <div>
-        <!-- <form action="{% url 'login' %}" method=POST>
-            {% csrf_token %}
-            <div>
-                User name:
-                <input type="text" name="username">
-            </div>
-            <div>
-                Password:
-                <input type="password" name="password">
-            </div>
-
-            <input type="submit" value="Login" name="login">
-        </form> -->
-        <h2>Login</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Login</button>
-        </form>
-        {% if messages %}
-            <ul>
+    <div class="card">
+        <div class="cardheader">
+            <h4 class="cardtitle">Đăng nhập</h4>
+        </div>
+        <div class="cardbody">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="cardbtn">Đăng nhập</button>
+            </form>
+        </div>
+        {% comment %} {% if messages %}
+            <ul class="messages">
                 {% for message in messages %}
                     <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
                 {% endfor %}
             </ul>
-        {% endif %}
+        {% endif %} {% endcomment %}
     </div>
 </body>
 </html>

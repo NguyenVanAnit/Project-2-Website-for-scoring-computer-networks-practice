@@ -22,10 +22,14 @@ from .forms import AddStudentForm, CreateClassForm, AssignmentForm
 from django.contrib import messages
 
 from django.contrib.auth.forms import AuthenticationForm
+from .forms import CustomAuthenticationForm
 
 from django.utils import timezone
 
 from django.contrib.auth import logout
+
+import binascii
+import time
 
 
 # Create your views here.
@@ -34,7 +38,7 @@ def home(request):
 
 def custom_login(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -52,7 +56,7 @@ def custom_login(request):
         else:
             messages.error(request, 'Invalid username or password.')
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
     return render(request, 'apps/login.html', {'form': form})
 
 def custom_logout(request):
@@ -205,6 +209,17 @@ def class_detail(request, class_id):
 #         'assignments': assignments
 #     })
 
+def view_student_submission(request, submission_id):
+    submission = get_object_or_404(Submission, id=submission_id)
+    assignment = submission.assignment
+    now = timezone.now()
+    show_score = now > assignment.deadline
+
+    return render(request, 'apps/teacher/view_student_submission.html', {
+        'assignment': assignment,
+        'submission': submission,
+        'show_score': show_score
+    })
 
 
 def view_assignment_submissions(request, assignment_id):
@@ -214,10 +229,27 @@ def view_assignment_submissions(request, assignment_id):
     return render(request, 'apps/teacher/assignment_submissions.html', {'assignment': assignment, 'submissions': submissions})
 
 def view_student_assignments(request, user_id):
-    user = get_object_or_404(User, id=user_id, role=0)  # Role 0 là học sinh
-    assignments = Assignment.objects.filter(student=user)
+    student = get_object_or_404(User, id=student_id)
+    if request.user != student:
+        messages.error(request, "You do not have permission to view this page.")
+        return redirect('home')
 
-    return render(request, 'apps/teacher/student_assignments.html', {'user': user, 'assignments': assignments})
+    assignments = Assignment.objects.filter(class_id__students=student)
+
+    assignment_results = []
+    for assignment in assignments:
+        submission = Submission.objects.filter(assignment_id=assignment, student=student).first()
+        if submission:
+            result = {
+                'assignment': assignment,
+                'submission': submission,
+                'show_score': timezone.now() > assignment.deadline
+            }
+            assignment_results.append(result)
+        else:
+            assignment_results.append({'assignment': assignment, 'submission': None, 'show_score': False})
+
+    return render(request, 'apps/student/student_assignments.html', {'student': student, 'assignment_results': assignment_results})
 # def class_detail(request, class_id):
 #     class_instance = get_object_or_404(Class, id=class_id, teacher=request.user)
 
@@ -303,12 +335,14 @@ def view_result(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     student = request.user
     submission = get_object_or_404(Submission, assignment_id=assignment, student=student)
-    answers = json.loads(submission.answers)
+
+    # Kiểm tra nếu deadline đã qua
+    is_past_deadline = assignment.deadline < timezone.now()
 
     return render(request, 'apps/student/view_result.html', {
-        'assignment': assignment,
         'submission': submission,
-        'answers': answers
+        'assignment': assignment,
+        'is_past_deadline': is_past_deadline,
     })
 
 def addStudenToClass(request):
@@ -335,6 +369,23 @@ def addStudenToClass(request):
         
     return render(request, 'apps/teacher/add-student-to-class.html', {'form': form})
 
+def delete_student_from_class(request, class_id):
+    class_instance = get_object_or_404(Class, id=class_id, teacher=request.user)
+    student_id = request.GET.get('student_id')
+    if student_id:
+        try:
+            student = User.objects.get(id=student_id)
+            if student in class_instance.students.all():
+                class_instance.students.remove(student)
+                messages.success(request, f'Học sinh {student.username} đã bị xóa khỏi lớp {class_instance.name}.')
+            else:
+                messages.error(request, 'Học sinh này không thuộc lớp.')
+        except User.DoesNotExist:
+            messages.error(request, 'Học sinh không tồn tại.')
+    else:
+        messages.error(request, 'Không tìm thấy học sinh để xóa.')
+
+    return redirect('class_detail', class_id=class_instance.id)
 
 
 class submitEx4(LoginRequiredMixin, View):
@@ -562,6 +613,9 @@ class submitEx4(LoginRequiredMixin, View):
                     score += 1
                 print('c1, c2')
 
+            #c3
+            
+
             # c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66':
                 strpayload = "414c49434527532041" # ALICE'S A
@@ -646,11 +700,9 @@ class submitEx4(LoginRequiredMixin, View):
                         score += 0.25
 
         # Lưu submission
-        submission.score = score
-        submission.save()
 
         submission, created = Submission.objects.get_or_create(
-            assignment_id=assignment, student=student,
+            assignment=assignment, student=student,
             defaults={'answers': json.dumps(answers), 'score': score, 'is_submitted': True}
         )
         if not created:
@@ -661,6 +713,15 @@ class submitEx4(LoginRequiredMixin, View):
 
         return redirect('view_result', assignment_id=assignment.id)
 
+def print_timestamp(ts, resol):
+    # chuyển thời gian thành đơn vị giây
+    ts_sec = ts // resol
+    # phần sau dấu phẩy của giây
+    ts_sec_resol = ts % resol
+    # chuyển thời gian thành đơn vị tự định dạng
+    ts_str = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(ts_sec))
+    # trả về 1 chuỗi string
+    return '{}.{}'.format(ts_str, ts_sec_resol)
 
 def upload_pcap(request, assignment_id):
     # login_url = '/login/'
@@ -691,6 +752,19 @@ def upload_pcap(request, assignment_id):
         port2 = None
         client_sequence_offset = None
         server_sequence_offset = None
+        
+        start_time = None
+        end_time = None
+
+        first_pkt_timestamp = None
+        first_pkt_timestamp_resolution = None
+
+        last_pkt_timestamp = None
+        last_pkt_timestamp_resolution = None
+
+        connection_found1 = False
+        connection_found2 = False
+        total_data_bytes = 0
 
         for (pkt_data, pkt_metadata,) in packets:
             count += 1
@@ -770,6 +844,37 @@ def upload_pcap(request, assignment_id):
                 if 'F' in tcp_pkt.flags:
                     fin = 1
 
+                print(tcp_pkt.flags)
+
+                start_file = '414c49434527532041'
+                end_file = '454e440d'
+                bps = 0
+                if tcp_payload is not None and ip_pkt.dst == '202.191.56.66':
+                    pkt_timestamp = (pkt_metadata.tshigh << 32 | pkt_metadata.tslow)
+                    pkt_timestamp_resolution = pkt_metadata.tsresol
+                    payload_hex = binascii.hexlify(tcp_payload).decode('utf-8')
+                    if start_file in payload_hex:
+                        first_pkt_timestamp = pkt_timestamp
+                        first_pkt_timestamp_resolution = pkt_timestamp_resolution
+                        connection_found1 = True
+
+                    if connection_found1:    
+                        last_pkt_timestamp = pkt_timestamp
+                        last_pkt_timestamp_resolution = pkt_timestamp_resolution
+                        total_data_bytes += len(tcp_payload)
+
+                    if end_file in payload_hex:
+                        connection_found1 = False
+                        connection_found2 = True
+
+                    if first_pkt_timestamp is not None and last_pkt_timestamp is not None and connection_found2:
+                        first_ts_str = print_timestamp(first_pkt_timestamp, first_pkt_timestamp_resolution)
+                        last_ts_str = print_timestamp(last_pkt_timestamp, last_pkt_timestamp_resolution)
+                        time_diff = (last_pkt_timestamp - first_pkt_timestamp) / last_pkt_timestamp_resolution
+                        bps = total_data_bytes / time_diff
+                        bps = round(bps, 2)
+                        print(bps)
+
                 packet_info = {
                     'stt': count,
                     'src_ip': ip_pkt.src,
@@ -781,7 +886,8 @@ def upload_pcap(request, assignment_id):
                     'seq': relative_sequence_offset,
                     'ack': relative_offset_ack,
                     'lenght_payload': len(tcp_pkt.payload),
-                    'fin': fin
+                    'fin': fin,
+                    'bps': bps
                 }
             elif ip_pkt.proto == 17:
                 tcp_pkt = ip_pkt[UDP]
@@ -796,7 +902,8 @@ def upload_pcap(request, assignment_id):
                     'seq': -1,
                     'ack': -3,
                     'lenght_payload': 0,
-                    'fin': -1
+                    'fin': -1,
+                    'bps': 0,
                 }     
             else:
                 continue
@@ -810,7 +917,7 @@ def upload_pcap(request, assignment_id):
         Submission.objects.create(
             assignment_id=assignment,
             student=request.user,
-            is_submited=True
+            is_submitted=True
         )
 
         return redirect('ex4', assignment_id=assignment.id)

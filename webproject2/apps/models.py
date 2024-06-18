@@ -31,13 +31,15 @@ class Submission(models.Model):
     assignment_id = models.ForeignKey('Assignment', on_delete=models.CASCADE, related_name='submissions')
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submissions')
     submission_time = models.DateTimeField(auto_now_add=True)
-    is_submited = models.BooleanField(default=False)
+    is_submitted = models.BooleanField(default=False)
     score = models.IntegerField(default=0)
     student_input = models.TextField(blank=True, null=True)
     answers = models.JSONField(default=dict)
     allow_view_score = models.BooleanField(default=False)
     pcap_file = models.FileField(upload_to='pcap_files/', null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.student.username} - {self.assignment.name}"
 
     # Thêm trường cho nội dung nộp bài, đánh giá, v.v.
-    
     

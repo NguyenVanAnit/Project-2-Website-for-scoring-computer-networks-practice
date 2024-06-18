@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Assignments</title>
+  </head>
+  <body>
+    <h1>Assignments for {{ student.username }}</h1>
+
+    <h3>Assignment List</h3>
+    <ul>
+      {% for result in assignment_results %}
+      <li>
+        <h4>
+          {{ result.assignment.name }} - Deadline: {{ result.assignment.deadline
+          }}
+        </h4>
+        {% if result.submission %}
+        <h5>Your Answers:</h5>
+        <ul>
+          {% for question, answer in result.submission.answers.items %}
+          <li>
+            {{ question }}: {{ answer }} {% if result.show_score %}
+            <!-- Assume there is a function in your model or view to check correctness of answers -->
+            {% if is_answer_correct(question, answer) %}
+            <span style="color: green">✔️</span>
+            {% else %}
+            <span style="color: red">❌</span>
+            {% endif %} {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% if result.show_score %}
+        <p>Your Score: {{ result.submission.score }}</p>
+        {% endif %} {% else %}
+        <p>No submission yet.</p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+
+    <a href="{% url 'home-student' %}">Back to Home</a>
+  </body>
+</html>

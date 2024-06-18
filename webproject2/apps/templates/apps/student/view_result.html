@@ -1,23 +1,60 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>Result for {{ assignment.name }}</h2>
+    <p>Score: {{ submission.score }}</p>
+    <h3>Answers:</h3>
+    <ul>
+      <li>STT: {{ answers.stt }}</li>
+      <li>Source IP: {{ answers.souIP }}</li>
+      <li>Destination IP: {{ answers.desIP }}</li>
+      <li>Source Port: {{ answers.souPort }}</li>
+      <li>Destination Port: {{ answers.desPort }}</li>
+      <li>Floor: {{ answers.floor }}</li>
+    </ul>
+    <br />
+    <a href="{% url 'student_class_detail' assignment.class_id.id %}">Back to Class</a>
+  </body>
+</html>
+{% endcomment %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Xem Kết Quả</title>
+    {% load custom_filters %}
 </head>
 <body>
-    <h2>Result for {{ assignment.name }}</h2>
-    <p>Score: {{ submission.score }}</p>
-    <h3>Answers:</h3>
+    <h1>Kết quả bài nộp cho {{ assignment.name }}</h1>
+    <p>Thời gian nộp: {{ submission.submission_time }}</p>
+
+    <h2>Câu trả lời của bạn</h2>
     <ul>
-        <li>STT: {{ answers.stt }}</li>
-        <li>Source IP: {{ answers.souIP }}</li>
-        <li>Destination IP: {{ answers.desIP }}</li>
-        <li>Source Port: {{ answers.souPort }}</li>
-        <li>Destination Port: {{ answers.desPort }}</li>
-        <li>Floor: {{ answers.floor }}</li>
+        {% for question, answer in submission.answers.items %}
+            <li>
+                <strong>{{ question }}:</strong> {{ answer }}
+                {% if is_past_deadline %}
+                    {% if answer|is_answer_correct:question %}
+                        <span style="color: green;">✔</span>
+                    {% else %}
+                        <span style="color: red;">✘</span>
+                    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
     </ul>
-    <br>
-    <a href="{% url 'student_class_detail' assignment.class_id.id %}">Back to Class</a>
+
+    {% if is_past_deadline %}
+        <h2>Điểm: {{ submission.score }}</h2>
+    {% endif %}
+
+    <a href="{% url 'class_detail' assignment.class_id.id %}">Quay lại lớp học</a>
 </body>
 </html>
