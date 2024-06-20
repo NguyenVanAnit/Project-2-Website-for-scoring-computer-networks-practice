@@ -28,7 +28,7 @@ class Assignment(models.Model):
         return self.name
 
 class Submission(models.Model):
-    assignment_id = models.ForeignKey('Assignment', on_delete=models.CASCADE, related_name='submissions')
+    assignment = models.ForeignKey('Assignment', on_delete=models.CASCADE, related_name='submissions')
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submissions')
     submission_time = models.DateTimeField(auto_now_add=True)
     is_submitted = models.BooleanField(default=False)

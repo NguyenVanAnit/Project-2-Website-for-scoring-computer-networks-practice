@@ -129,6 +129,19 @@ def create_class(request):
     
     return render(request, 'apps/teacher/create-class.html', {'form': form})
 
+# học sinh rời khỏi lớp
+def delete_class_for_student(request, class_id):
+    class_instance = get_object_or_404(Class, id=class_id)
+    student = request.user
+
+    if student in class_instance.students.all():
+        class_instance.students.remove(student)
+        messages.success(request, f'Bạn đã rời khỏi lớp {class_instance.name} thành công.')
+    else:
+        messages.error(request, 'Bạn không thuộc lớp này.')
+
+    return redirect('student_classes')
+
 @decorators.login_required(login_url = '/login/')
 def class_detail(request, class_id):
     class_instance = get_object_or_404(Class, id=class_id, teacher=request.user)
@@ -331,19 +344,18 @@ def assignment_detail(request, assignment_id):
         'can_view_score': can_view_score
     })
 
-def view_result(request, assignment_id):
-    assignment = get_object_or_404(Assignment, id=assignment_id)
-    student = request.user
-    submission = get_object_or_404(Submission, assignment_id=assignment, student=student)
+class ViewResult(LoginRequiredMixin, View):
+    login_url = '/login/'
 
-    # Kiểm tra nếu deadline đã qua
-    is_past_deadline = assignment.deadline < timezone.now()
-
-    return render(request, 'apps/student/view_result.html', {
-        'submission': submission,
-        'assignment': assignment,
-        'is_past_deadline': is_past_deadline,
-    })
+    def get(self, request, assignment_id):
+        assignment = get_object_or_404(Assignment, id=assignment_id)
+        submission = get_object_or_404(Submission, assignment=assignment, student=request.user)
+        is_past_deadline = timezone.now() > assignment.deadline
+        return render(request, 'apps/student/view_result.html', {
+            'assignment': assignment,
+            'submission': submission,
+            'is_past_deadline': is_past_deadline
+        })
 
 def addStudenToClass(request):
     if request.method == 'POST':
@@ -408,24 +420,14 @@ class submitEx4(LoginRequiredMixin, View):
         # submission = Submission.objects.filter(assignment_id=assignment, student=student).first()
         # if submission and submission.is_submited:
         #     return HttpResponse("You have already submitted this assignment.")
-        
-        answers = {
-            'stt': request.POST.get('stt', ''),
-            'souIP': request.POST.get('souIP', ''),
-            'desIP': request.POST.get('desIP', ''),
-            'souPort': request.POST.get('souPort', ''),
-            'desPort': request.POST.get('desPort', ''),
-            'floor': request.POST.get('floor', '')
-        }
 
         # c1
-        stt = request.POST.get('stt')
+        stt = request.POST.get('stt') 
         souIP = request.POST.get('souIP')
         desIP = request.POST.get('desIP')
         souPort = request.POST.get('souPort')
         desPort = request.POST.get('desPort')
         floor = request.POST.get('floor')
-
 
         if stt == '':
             stt = -1
@@ -446,6 +448,33 @@ class submitEx4(LoginRequiredMixin, View):
             stt2 = -1
         if success2 is None:
             success2 = -1
+
+        #c3
+        souIP3 = request.POST.get('souIP3')
+        desIP3 = request.POST.get('desIP3')
+        souPort3 = request.POST.get('souPort3')
+        desPort3 = request.POST.get('desPort3')
+        
+        stt31 = int(request.POST.get('stt31') or -1)
+        nhiphan31 = request.POST.get('nhiphan31')
+        flag31 = request.POST.get('flag31')
+        seq31 = int(request.POST.get('seq31') or -1)
+        ack31 = int(request.POST.get('ack31') or -1)
+        lenghtdata31 = int(request.POST.get('lenghtdata31') or -1)
+
+        stt32 = int(request.POST.get('stt32') or -1)
+        nhiphan32 = request.POST.get('nhiphan32')
+        flag32 = request.POST.get('flag32')
+        seq32 = int(request.POST.get('seq32') or -1)
+        ack32 = int(request.POST.get('ack32') or -1)
+        lenghtdata32 = int(request.POST.get('lenghtdata32') or -1)
+
+        stt33 = int(request.POST.get('stt33') or -1)
+        nhiphan33 = request.POST.get('nhiphan33')
+        flag33 = request.POST.get('flag33')
+        seq33 = int(request.POST.get('seq33') or -1)
+        ack33 = int(request.POST.get('ack33') or -1)
+        lenghtdata33 = int(request.POST.get('lenghtdata33') or -1)
 
         # c4
         stt4 = request.POST.get('stt4')
@@ -530,6 +559,72 @@ class submitEx4(LoginRequiredMixin, View):
         if lenghtdata7 == '':
             lenghtdata7 = -1
 
+        #c8
+        bps8 = (request.POST.get('bps8') or -111)
+
+        answers = {
+            '1.Số thứ tự gói tin': stt,
+            '1.Địa chỉ IP nguồn': souIP,
+            '1.Địa chỉ IP đích': desIP,
+            '1.Cổng nguồn': souPort,
+            '1.Cổng đích': desPort,
+            '1.Tầng': floor,
+            '2.Số thứ tự gói tin': stt2,
+            '2.Thành công hay không?': success2,
+            '3.Địa chỉ IP nguồn': souIP3,
+            '3.Địa chỉ IP đích': desIP3,
+            '3.Cổng nguồn': souPort3,
+            '3.Cổng đích': desPort3,
+            '3.1.Số thứ tự gói tin': stt31,
+            '3.1.Giá trị nhị phân trường Flag': nhiphan31,
+            '3.1.Các cờ thiết lập': flag31,
+            '3.1.Sequence number': seq31,
+            '3.1.Ack number': ack31,
+            '3.1.Kích thước phần dữ liệu': lenghtdata31,
+            '3.2.Số thứ tự gói tin': stt32,
+            '3.2.Giá trị nhị phân trường Flag': nhiphan32,
+            '3.2.Các cờ thiết lập': flag32,
+            '3.2.Sequence number': seq32,
+            '3.2.Ack number': ack32,
+            '3.2.Kích thước phần dữ liệu': lenghtdata32,
+            '3.3.Số thứ tự gói tin': stt33,
+            '3.3.Giá trị nhị phân trường Flag': nhiphan33,
+            '3.3.Các cờ thiết lập': flag33,
+            '3.3.Sequence number': seq33,
+            '3.3.Ack number': ack33,
+            '3.3.Kích thước phần dữ liệu': lenghtdata33,
+            '4.Số thứ tự gói tin': stt4,
+            '4.Địa chỉ IP nguồn': souIP4,
+            '4.Địa chỉ IP đích': desIP4,
+            '4.Cổng nguồn': souPort4,
+            '4.Cổng đích': desPort4,
+            '4.Sequence number': seq4,
+            '4.Ack number': ack4,
+            '4.Kích thước phần tiêu đề': lenghttcp4,
+            '4.Kích thước phần dữ liệu': lenghtdata4,
+            '4.Các cờ thiết lập': flag4,
+            '4.Tầng mạng': floor4,
+            '5.Số thứ tự gói tin': stt4,
+            '5.Địa chỉ IP nguồn': souIP4,
+            '5.Địa chỉ IP đích': desIP4,
+            '5.Cổng nguồn': souPort4,
+            '5.Cổng đích': desPort4,
+            '5.Sequence number': seq4,
+            '5.Ack number': ack4,
+            '5.Kích thước phần tiêu đề': lenghttcp4,
+            '5.Kích thước phần dữ liệu': lenghtdata4,
+            '5 .Các cờ thiết lập': flag4,
+            '5.Kết luận': success5,
+            '6.Sequence number': seq6,
+            '7.Số thứ tự gói tin': stt7,
+            '7.Giá trị nhị phân trường Flag': nhiphan7,
+            '7.Các cờ thiết lập': flag7,
+            '7.Sequence number': seq7,
+            '7.Ack number': ack7,
+            '7.Kích thước phần dữ liệu': lenghtdata7,
+            '8.Thông lượng trung bình': bps8
+        }
+
         # data = {
         #     'c1':{
         #         'stt': stt,
@@ -565,11 +660,15 @@ class submitEx4(LoginRequiredMixin, View):
             packets = json.load(json_file)
 
         score = 0
+        start_syn3 = True
+        start_synack3 = True
+        start_ack3 = True
         start_stt4 = 99999999
         start_stt5 = True
         start_ack5 = -98989898
         start_stt6 = True
         start_stt7 = True
+        max_bps = 0
 
         for packet in packets:
             j_stt = packet.get('stt')
@@ -584,20 +683,22 @@ class submitEx4(LoginRequiredMixin, View):
             j_ack = packet.get('ack')
             j_lenght_payload = packet.get('lenght_payload')
             j_fin = packet.get('fin')
+            j_bps = packet.get('bps')
+            j_syn = packet.get('syn')
             
             # c1, c2  
             if int(stt) == j_stt and j_protocol == 'UDP':
                 # c1
                 if souIP == j_src_ip:
-                    score += 1
+                    score += 0.2
                 if desIP == j_dst_ip:
-                    score += 1
+                    score += 0.2
                 if int(souPort) == j_src_port:
-                    score += 1
+                    score += 0.2
                 if int(desPort) == j_dst_port:
-                    score += 1
+                    score += 0.2
                 if int(floor) == 4:
-                    score += 1
+                    score += 0.2
 
                 # c2
                 dst_packet_c1_stt = 0
@@ -608,40 +709,61 @@ class submitEx4(LoginRequiredMixin, View):
                         dst_packet_c1_stt = dst_packet.get('stt')
                         break
                 if int(stt2) == int(dst_packet_c1_stt):
-                    score += 1
+                    score += 0.25
                 if int(success2) == 0:
-                    score += 1
+                    score += 0.25
                 print('c1, c2')
 
             #c3
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
+                start_syn3 = False
+                if souIP3 == j_src_ip:
+                    score += 0.25
+                if desIP3 == '202.191.56.66':
+                    score += 0.25
+                if souPort3 == j_src_port:
+                    score += 0.25
+                if desPort3 == j_dst_port:
+                    score += 0.25
+                if stt31 == j_stt and nhiphan31 == '000000000010' and flag31 == 'SYN' and seq31 == j_seq and ack31 == 0 and lenghtdata31 == 0:
+                    score += 0.5
+                
+            if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
+                start_synack3 = False
+                if stt32 == j_stt and nhiphan32 == '000000010010' and 'SYN' in flag32 and 'ACK' in flag32 and seq32 == j_seq and ack32 == 1 and lenghtdata32 == 0:
+                    score += 0.5
             
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
+                start_ack3 = False
+                if stt33 == j_stt and nhiphan33 == '000000000010' and flag33 == 'ACK' and seq33 == j_seq and ack32 == 1 and lenghtdata33 == 0:
+                    score += 0.5
 
             # c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66':
                 strpayload = "414c49434527532041" # ALICE'S A
                 if strpayload in j_payload:
                     if int(stt4) == j_stt:
-                        score += 1
+                        score += 0.2
                     if souIP4 == j_src_ip:    
-                        score += 1
+                        score += 0.1
                     if desIP4 == '202.191.56.66':
-                        score += 1
+                        score += 0.1
                     if int(souPort4) == j_src_port:
-                        score += 1
+                        score += 0.2
                     if int(desPort4) == j_dst_port:
-                        score += 1
+                        score += 0.2
                     if int(seq4) == j_seq:
-                        score += 1
+                        score += 0.2
                     if int(ack4) == 1:
-                        score += 1
+                        score += 0.2
                     if int(lenghttcp4) == 20:
-                        score += 1
+                        score += 0.2
                     if int(lenghtdata4) == j_lenght_payload:
-                        score += 1
+                        score += 0.2
                     if flag4 == 'ACK':
-                        score += 1
+                        score += 0.2
                     if int(floor4) == 4:
-                        score += 1
+                        score += 0.2
                     print('c4')
                     start_stt4 = j_stt
                     start_ack5 = j_seq
@@ -652,27 +774,27 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt5 = False
                     if int(stt5) == j_stt:
-                        score += 1
+                        score += 0.2
                     if souIP5 == j_src_ip:    
-                        score += 1
+                        score += 0.1
                     if desIP5 == j_dst_ip:
-                        score += 1
+                        score += 0.1
                     if int(souPort5) == j_src_port:
-                        score += 1
+                        score += 0.2
                     if int(desPort5) == j_dst_port:
-                        score += 1
+                        score += 0.2
                     if int(seq5) == j_seq:
-                        score += 1
+                        score += 0.2
                     if int(ack5) == start_ack5:
-                        score += 1
+                        score += 0.2
                     if int(lenghttcp5) == 20:
-                        score += 1
+                        score += 0.2
                     if int(lenghtdata5) == 0:
-                        score += 1
+                        score += 0.2
                     if flag5 == 'ACK':
-                        score += 1
+                        score += 0.2
                     if int(success5) == 1:
-                        score += 1
+                        score += 0.2
                     
             # c6
             if j_stt > start_stt4 and start_stt6:
@@ -680,7 +802,7 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt6 = False
                     if int(seq6) == j_seq:
-                        score += 0.25
+                        score += 1
             
             # c7
             if j_stt > start_stt4 and start_stt7:
@@ -688,30 +810,62 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt7 = False
                     if int(stt7) == j_stt:
-                        score += 0.25
+                        score += 0.2
                     if nhiphan7 == '000000010001':
-                        score += 0.25
+                        score += 0.2
                     if ('FIN' in flag7) and ('ACK' in flag7):
-                        score += 0.25
+                        score += 0.2
                     if int(seq7) == j_seq:
-                        score += 0.25
+                        score += 0.2
                     
                     if int(lenghtdata7) == 0:
-                        score += 0.25
+                        score += 0.2
+
+            #8
+            if j_bps > max_bps:
+                max_bps = j_bps
+            if max_bps == bps8:
+                score += 0.5
 
         # Lưu submission
 
+        # submission, created = Submission.objects.get_or_create(
+        #     assignment=assignment, student=student,
+        #     defaults={'answers': json.dumps(answers), 'score': score, 'is_submitted': True}
+        # )
+        # if not created:
+        #     submission.answers = json.dumps(answers)
+        #     submission.score = score
+        #     submission.is_submitted = True
+        #     submission.save()
+
+        # return redirect('view_result', assignment_id=assignment.id)
         submission, created = Submission.objects.get_or_create(
             assignment=assignment, student=student,
-            defaults={'answers': json.dumps(answers), 'score': score, 'is_submitted': True}
+            defaults={'answers': answers, 'score': score, 'is_submitted': True}
         )
         if not created:
-            submission.answers = json.dumps(answers)
+            submission.answers = answers
             submission.score = score
             submission.is_submitted = True
             submission.save()
-
+        print(score)
         return redirect('view_result', assignment_id=assignment.id)
+    
+class submitEx5(LoginRequiredMixin, View):
+    login_url = '/login/'
+    def get(self, request, assignment_id):
+        assignment = get_object_or_404(Assignment, id=assignment_id)
+        return render(request, 'apps/student/ex5.html', {'assignment': assignment})
+    
+    def post(self, request, assignment_id):
+        assignment = get_object_or_404(Assignment, id=assignment_id)
+
+        student = request.user
+
+        current_time = timezone.now()
+
+        
 
 def print_timestamp(ts, resol):
     # chuyển thời gian thành đơn vị giây
@@ -844,7 +998,12 @@ def upload_pcap(request, assignment_id):
                 if 'F' in tcp_pkt.flags:
                     fin = 1
 
-                print(tcp_pkt.flags)
+                syn = 0
+                if tcp_pkt.flags == 'S':
+                    syn = 1
+                elif tcp_pkt.flags == 'SA':
+                    syn = 2
+
 
                 start_file = '414c49434527532041'
                 end_file = '454e440d'
@@ -887,7 +1046,8 @@ def upload_pcap(request, assignment_id):
                     'ack': relative_offset_ack,
                     'lenght_payload': len(tcp_pkt.payload),
                     'fin': fin,
-                    'bps': bps
+                    'bps': bps,
+                    'syn': syn
                 }
             elif ip_pkt.proto == 17:
                 tcp_pkt = ip_pkt[UDP]
@@ -904,6 +1064,7 @@ def upload_pcap(request, assignment_id):
                     'lenght_payload': 0,
                     'fin': -1,
                     'bps': 0,
+                    'syn': -1
                 }     
             else:
                 continue
@@ -915,7 +1076,7 @@ def upload_pcap(request, assignment_id):
             json.dump(data_list, json_file)
 
         Submission.objects.create(
-            assignment_id=assignment,
+            assignment_id=assignment.id,
             student=request.user,
             is_submitted=True
         )

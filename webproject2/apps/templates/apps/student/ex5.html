@@ -45,6 +45,8 @@
                 <h3>Câu 1 (1đ)</h3>
                 <label for="">STT gói tin (No.)</label>
                 <input type="number" name="stt" ><br>
+                <label for="">Giao thức tầng giao vận được sử dụng để gửi thông điệp đi</label>
+                <input type="text" name="protocol"><br>
                 <label for="">Địa chỉ IP nguồn</label>
                 <input type="text" name="souIP" ><br>
                 <label for="">Địa chỉ IP đích</label>
@@ -53,35 +55,36 @@
                 <input type="number" name="souPort" ><br>
                 <label for="">Số hiệu cổng đích</label>
                 <input type="number" name="desPort" ><br>
-
-                <label for="">Gói tin này được đóng gói vào gói tin của giao thức tầng mạng nào?</label><br>
-                <input type="radio" name="floor" value="1">
-                <label for="">Tầng vật lý</label>
-                <input type="radio" name="floor" value="2">
-                <label for="">Tầng Data Link</label>
-                <input type="radio" name="floor" value="3">
-                <label for="">Tầng IP</label>
-                <input type="radio" name="floor" value="4">
-                <label for="">Tầng giao vận</label>
-                <input type="radio" name="floor" value="5">
-                <label for="">Tầng ứng dụng</label>
+                <label for="">Đây là số hiệu cổng ứng dụng của dịch vụ nào?</label>
+                <textarea name="reason" rows="1" cols="70"><br>
+                <label for="">Kiểu thông tin truy vấn(Type)</label>
+                <input type="text" name="type"><br>
+                <label for="">Qua việc xác định các thông số mạng trên máy trạm của sinh viên ở mục 3.1, cho biết thông điệp này được gửi tới nút mạng nào?</label><br>
+                <textarea name="reason12" id="" rows="1" cols="70"></textarea>
             </div>
 
             <div class="cauhoi mt-3 pb-3">
                 <h3 >Câu 2 (0.5đ)</h3>
-                <label for="">STT gói tin</label>
+                <label for="">STT gói tin (No.)</label>
                 <input type="number" name="stt2" ><br>
-                <label for="">Lý do</label><br>
-                <textarea name="reason21" id="" rows="4" cols="50"></textarea>
-                <br>
-                <label for="">Máy đích có thể biết được gói tin này đã được truyền thành công hay không?</label><br>
-                <input type="radio" name="success2" value="0">
-                <label for="">Không</label>
-                <input type="radio" name="success2" value="1">
-                <label for="">Có</label>
-                <br>
-                <label for="">Lý do</label><br>
-                <textarea name="reason22" id="" rows="4" cols="50"></textarea>
+                <label for="">Giao thức tầng giao vận được sử dụng để gửi thông điệp đi</label>
+                <input type="text" name="protocol2"><br>
+                <label for="">Địa chỉ IP nguồn</label>
+                <input type="text" name="souIP2" ><br>
+                <label for="">Địa chỉ IP đích</label>
+                <input type="text" name="desIP2" ><br>
+                <label for="">Số hiệu cổng nguồn</label>
+                <input type="number" name="souPort2" ><br>
+                <label for="">Số hiệu cổng đích</label>
+                <input type="number" name="desPort2" ><br>
+                <label for="">Kiểu thông tin truy vấn(Type)</label>
+                <input type="text" name="type2"><br>
+                <label for="">Tên miền được truy vấn</label>
+                <input type="text" name="mien2">
+                <label for="">Địa chỉ IP của tên miền được truy vấn</label>
+                <input type="text" name="mienIP">
+                <label for="">Tại sao xác định được đây là thông điệp trả lời cho thông điệp yêu cầu ở bước 2?</label><br>
+                <textarea name="reason2" id="" rows="1" cols="70"></textarea>
             </div>
 
             <div class="cauhoi mt-3 pb-3">

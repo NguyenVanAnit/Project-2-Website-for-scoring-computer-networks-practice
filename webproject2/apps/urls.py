@@ -19,11 +19,14 @@ urlpatterns = [
     path('student_class_detail/<int:class_id>/', views.student_class_detail, name='student_class_detail'),
     path('assignment/<int:assignment_id>/', views.assignment_detail, name='assignment_detail'),
     path('student/<int:student_id>/submissions/', views.student_submission_detail, name='student_submission_detail'),
-    path('view_result/<int:assignment_id>/', views.view_result, name='view_result'),
     path('view_assignment_submissions/<int:assignment_id>/', views.view_assignment_submissions, name='view_assignment_submissions'),
     path('student/<int:student_id>/assignments/', views.view_student_assignments, name='view_student_assignments'),
     path('class/<int:class_id>/delete_student/', views.delete_student_from_class, name='delete_student_from_class'),
     path('submission/<int:submission_id>/', views.view_student_submission, name='view_student_submission'),
+    path('class/<int:class_id>/delete/', views.delete_class_for_student, name='delete_class_for_student'),
+    # path('view_result/<int:assignment_id>/', views.view_result, name='view_result'),
+    path('view_result/<int:assignment_id>/', views.ViewResult.as_view(), name='view_result'),
+
 
     # path('list-class/teacherid=<int:user_id>', view.)
 ]

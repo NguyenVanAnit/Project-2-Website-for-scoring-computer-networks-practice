@@ -4,63 +4,120 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chi tiết lớp học</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
   </head>
   <body>
-    <h1>{{ class_instance.name }} ({{ class_instance.code }})</h1>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+              <a class="navbar-brand" href="{% url 'home-teacher' %}">Hust Network</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                      <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="{% url 'list-classes' %}">Danh sách lớp học của tôi</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link active" aria-current="page" href="{% url 'create-class' %}">Tạo lớp học mới</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                      </li>
+                  </ul>
+              <div class="nav-item">
+                  <a class="nav-link active text-secondary" aria-current="page" href="#">{{ request.user.username }}</a>
+              </div>
+                  <div class="nav-item">
+                      <a class="nav-link active text-secondary" aria-current="page" href="{% url 'logout' %}">Đăng xuất</a>
+                  </div>
+              </div>
+          </div>
+      </nav>
+      
+      <h3>Lớp: {{ class_instance.name }}</h3>
+      <h5 class="text-secondary">Mã code: {{ class_instance.code }}</h5>
 
-    <h3>Danh sách bài tập</h3>
-    <ul>
-      {% for assignment in assignments %}
-      <li>
-        {{ assignment.name }} - Deadline: {{ assignment.deadline }}
-        <a href="{% url 'view_assignment_submissions' assignment.id %}">Xem bài làm của học sinh</a>
-        <ul>
-          {% for submission in assignment.submissions.all %}
-              <li>
-                  {{ submission.student.username }} - 
-                  <a href="{% url 'view_student_submission' submission.id %}">Xem bài nộp</a>
-              </li>
-          {% endfor %}
-        </ul>
-      </li>
-      {% endfor %}
-    </ul>
+      <div class="row mt-4">
+          {% if messages %}
+          <ul class="text-success fw-bold">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
+              {{ message }}
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          <div class="col-12 col-md-6">
+              <h3>Thêm bài tập mới</h3>
+              <form method="post" class="mb-4">
+                {% csrf_token %} {{ form2.as_p }}
+                <button type="submit" name="add_assignment" class="btn btn-success">Thêm bài tập</button>
+              </form>
 
-    <!-- Form thêm bài tập -->
-    <h3>Thêm bài tập mới</h3>
-    <form method="post">
-      {% csrf_token %} {{ form2.as_p }}
-      <button type="submit" name="add_assignment">Thêm bài tập</button>
-    </form>
+              <h3 class="pt-3" style="border-top: 1px solid gray;">Danh sách bài tập</h3>
+              <ul>
+                {% for assignment in assignments %}
+                <li>
+                  <p class="fs-4 text-primary">Tên bài thực hành: {{ assignment.name }}</p>
+                  <p class="fs-6 text-warning fw-bold">Deadline: {{ assignment.deadline }}</p>
+                  <a href="{% url 'view_assignment_submissions' assignment.id %}" class="btn-secondary btn">Xem tổng quan tất cả</a>
+                  
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Sinh viên</th>
+                        <th class="mr-2">MSSV</th>
+                        <th>Bài nộp</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for submission in assignment.submissions.all %}
+                        <tr>
+                            <td>{{ submission.student.username }}</td>
+                            <td>{{ submission.student.user_id }}</td>
+                            <td><a href="{% url 'view_student_submission' submission.id %}" class="btn btn-success">Xem bài nộp</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
 
-    <h2>Add Student</h2>
-    <form method="post">
-      {% csrf_token %} {{ form.as_p }}
-      <button type="submit" name="add_student">Add Student</button>
-    </form>
+                </li>
+                {% endfor %}
+              </ul>
+          </div>
+          <div class="col-12 col-md-6">
+              <h3>Thêm học sinh</h3>
+              <form method="post" class="mb-4">
+                {% csrf_token %} {{ form.as_p }}
+                <button type="submit" name="add_student" class="btn btn-success">Thêm sinh viên</button>
+              </form>
 
-    {% if messages %}
-    <ul>
-      {% for message in messages %}
-      <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>
-        {{ message }}
-      </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-
-    <h2>Students</h2>
-    <ul>
-      {% for student in students %}
-      <li>
-        {{ student.username }} ({{ student.user_id }})
-        <a href="{% url 'view_student_assignments' student.id %}">Xem danh sách bài tập</a>
-        <button onclick="confirmDelete({{ student.id }})">Xóa</button>
-      </li>
-      {% endfor %}
-    </ul>
-
-    <a href="{% url 'list-classes' %}">Back to List Classes</a>
+              <h3 class="pt-3" style="border-top: 1px solid gray;">Danh sách học sinh</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Tên sinh viên</th>
+                    <th>MSSV</th>
+                    <th>Khác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in students %}
+                  <tr>
+                    <td>{{ student.username }}</td>
+                    <td>{{ student.user_id }}</td>
+                    {% comment %} <a href="{% url 'view_student_assignments' student.id %}">Xem danh sách bài tập</a> {% endcomment %}
+                    <td><button onclick="confirmDelete({{ student.id }})" class="btn btn-danger">Xóa</button></td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <a href="{% url 'list-classes' %}" class="btn btn-primary mt-3 mx-3">Quay lại danh sách lớp</a>
+          </div>
+      </div>
+  </div>
 
     <script>
       function confirmDelete(studentId) {

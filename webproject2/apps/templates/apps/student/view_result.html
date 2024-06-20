@@ -1,60 +1,77 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <h2>Result for {{ assignment.name }}</h2>
-    <p>Score: {{ submission.score }}</p>
-    <h3>Answers:</h3>
-    <ul>
-      <li>STT: {{ answers.stt }}</li>
-      <li>Source IP: {{ answers.souIP }}</li>
-      <li>Destination IP: {{ answers.desIP }}</li>
-      <li>Source Port: {{ answers.souPort }}</li>
-      <li>Destination Port: {{ answers.desPort }}</li>
-      <li>Floor: {{ answers.floor }}</li>
-    </ul>
-    <br />
-    <a href="{% url 'student_class_detail' assignment.class_id.id %}">Back to Class</a>
-  </body>
-</html>
-{% endcomment %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xem Kết Quả</title>
-    {% load custom_filters %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    
+    {% load custom_tags %}
 </head>
 <body>
-    <h1>Kết quả bài nộp cho {{ assignment.name }}</h1>
-    <p>Thời gian nộp: {{ submission.submission_time }}</p>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'home-student' %}">Hust Network</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'student_classes' %}">Danh sách lớp học của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                        </li>
+                    </ul>
+                <div class="nav-item">
+                    <a class="nav-link active text-secondary" aria-current="page" href="#">{{ request.user.username }}</a>
+                </div>
+                    <div class="nav-item">
+                        <a class="nav-link active text-secondary" aria-current="page" href="{% url 'logout' %}">Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <h3 class="text-primary">Kết quả bài nộp cho {{ assignment.name }}</h3>
+        <p>Thời gian nộp: {{ submission.submission_time }}</p>
 
-    <h2>Câu trả lời của bạn</h2>
-    <ul>
-        {% for question, answer in submission.answers.items %}
-            <li>
-                <strong>{{ question }}:</strong> {{ answer }}
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <h3 class="text-warning">Câu trả lời của bạn</h3>
                 {% if is_past_deadline %}
-                    {% if answer|is_answer_correct:question %}
-                        <span style="color: green;">✔</span>
-                    {% else %}
-                        <span style="color: red;">✘</span>
-                    {% endif %}
+                    <h2 class="text-success">Điểm: {{ submission.score }}</h2>
                 {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-
-    {% if is_past_deadline %}
-        <h2>Điểm: {{ submission.score }}</h2>
-    {% endif %}
-
-    <a href="{% url 'class_detail' assignment.class_id.id %}">Quay lại lớp học</a>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Câu hỏi</th>
+                            <th>Câu trả lời</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question, answer in submission.answers.items %}
+                        <tr>
+                            <td>{{ question }}</td> 
+                            <td>{{ answer }}</td>
+                            {% if is_past_deadline %}
+                                <!-- If you have a filter or function to check the answer's correctness, use it here -->
+                                {% if answer|is_answer_correct:question %}
+                                    <span style="color: green;">✔</span>
+                                {% else %}
+                                    <span style="color: red;">✘</span>
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-12 col-md-4">
+                <a href="{% url 'home-student' %}" class="btn btn-primary mt-5 mx-5 d-flex justify-content-center">Quay lại trang chủ</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
