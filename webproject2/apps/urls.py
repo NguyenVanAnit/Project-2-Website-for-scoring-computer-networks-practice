@@ -26,6 +26,8 @@ urlpatterns = [
     path('class/<int:class_id>/delete/', views.delete_class_for_student, name='delete_class_for_student'),
     # path('view_result/<int:assignment_id>/', views.view_result, name='view_result'),
     path('view_result/<int:assignment_id>/', views.ViewResult.as_view(), name='view_result'),
+    path('submitEx5/<int:assignment_id>/', views.submitEx5.as_view(), name='ex5'),
+
 
 
     # path('list-class/teacherid=<int:user_id>', view.)

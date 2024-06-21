@@ -569,69 +569,6 @@ class submitEx4(LoginRequiredMixin, View):
         #c8
         bps8 = (request.POST.get('bps8') or -111)
 
-        answers = {
-            '1.Số thứ tự gói tin': stt,
-            '1.Địa chỉ IP nguồn': souIP,
-            '1.Địa chỉ IP đích': desIP,
-            '1.Cổng nguồn': souPort,
-            '1.Cổng đích': desPort,
-            '1.Tầng': floor,
-            '2.Số thứ tự gói tin': stt2,
-            '2.Thành công hay không?': success2,
-            '3.Địa chỉ IP nguồn': souIP3,
-            '3.Địa chỉ IP đích': desIP3,
-            '3.Cổng nguồn': souPort3,
-            '3.Cổng đích': desPort3,
-            '3.1.Số thứ tự gói tin': stt31,
-            '3.1.Giá trị nhị phân trường Flag': nhiphan31,
-            '3.1.Các cờ thiết lập': flag31,
-            '3.1.Sequence number': seq31,
-            '3.1.Ack number': ack31,
-            '3.1.Kích thước phần dữ liệu': lenghtdata31,
-            '3.2.Số thứ tự gói tin': stt32,
-            '3.2.Giá trị nhị phân trường Flag': nhiphan32,
-            '3.2.Các cờ thiết lập': flag32,
-            '3.2.Sequence number': seq32,
-            '3.2.Ack number': ack32,
-            '3.2.Kích thước phần dữ liệu': lenghtdata32,
-            '3.3.Số thứ tự gói tin': stt33,
-            '3.3.Giá trị nhị phân trường Flag': nhiphan33,
-            '3.3.Các cờ thiết lập': flag33,
-            '3.3.Sequence number': seq33,
-            '3.3.Ack number': ack33,
-            '3.3.Kích thước phần dữ liệu': lenghtdata33,
-            '4.Số thứ tự gói tin': stt4,
-            '4.Địa chỉ IP nguồn': souIP4,
-            '4.Địa chỉ IP đích': desIP4,
-            '4.Cổng nguồn': souPort4,
-            '4.Cổng đích': desPort4,
-            '4.Sequence number': seq4,
-            '4.Ack number': ack4,
-            '4.Kích thước phần tiêu đề': lenghttcp4,
-            '4.Kích thước phần dữ liệu': lenghtdata4,
-            '4.Các cờ thiết lập': flag4,
-            '4.Tầng mạng': floor4,
-            '5.Số thứ tự gói tin': stt4,
-            '5.Địa chỉ IP nguồn': souIP4,
-            '5.Địa chỉ IP đích': desIP4,
-            '5.Cổng nguồn': souPort4,
-            '5.Cổng đích': desPort4,
-            '5.Sequence number': seq4,
-            '5.Ack number': ack4,
-            '5.Kích thước phần tiêu đề': lenghttcp4,
-            '5.Kích thước phần dữ liệu': lenghtdata4,
-            '5 .Các cờ thiết lập': flag4,
-            '5.Kết luận': success5,
-            '6.Sequence number': seq6,
-            '7.Số thứ tự gói tin': stt7,
-            '7.Giá trị nhị phân trường Flag': nhiphan7,
-            '7.Các cờ thiết lập': flag7,
-            '7.Sequence number': seq7,
-            '7.Ack number': ack7,
-            '7.Kích thước phần dữ liệu': lenghtdata7,
-            '8.Thông lượng trung bình': bps8
-        }
-
         # data = {
         #     'c1':{
         #         'stt': stt,
@@ -697,14 +634,19 @@ class submitEx4(LoginRequiredMixin, View):
             if int(stt) == j_stt and j_protocol == 'UDP':
                 # c1
                 if souIP == j_src_ip:
+                    souIP += '✔'
                     score += 0.2
                 if desIP == j_dst_ip:
+                    desIP += '✔'
                     score += 0.2
                 if int(souPort) == j_src_port:
+                    souPort += '✔'
                     score += 0.2
                 if int(desPort) == j_dst_port:
+                    desPort += '✔'
                     score += 0.2
                 if int(floor) == 4:
+                    floor += '✔'
                     score += 0.2
 
                 # c2
@@ -716,60 +658,79 @@ class submitEx4(LoginRequiredMixin, View):
                         dst_packet_c1_stt = dst_packet.get('stt')
                         break
                 if int(stt2) == int(dst_packet_c1_stt):
+                    stt2 += '✔'
                     score += 0.25
                 if int(success2) == 0:
+                    success2 += '✔'
                     score += 0.25
-                print('c1, c2')
 
             #c3
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
                 start_syn3 = False
                 if souIP3 == j_src_ip:
+                    souIP3 += '✔'
                     score += 0.25
                 if desIP3 == '202.191.56.66':
+                    desIP3 += '✔'
                     score += 0.25
                 if souPort3 == j_src_port:
+                    souPort3 += '✔'
                     score += 0.25
                 if desPort3 == j_dst_port:
+                    desPort3 += '✔'
                     score += 0.25
                 if stt31 == j_stt and nhiphan31 == '000000000010' and flag31 == 'SYN' and seq31 == j_seq and ack31 == 0 and lenghtdata31 == 0:
+                    stt31 += '✔'
                     score += 0.5
                 
             if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
                 start_synack3 = False
                 if stt32 == j_stt and nhiphan32 == '000000010010' and 'SYN' in flag32 and 'ACK' in flag32 and seq32 == j_seq and ack32 == 1 and lenghtdata32 == 0:
                     score += 0.5
+                    stt32 += '✔'
             
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
                 start_ack3 = False
                 if stt33 == j_stt and nhiphan33 == '000000000010' and flag33 == 'ACK' and seq33 == j_seq and ack32 == 1 and lenghtdata33 == 0:
                     score += 0.5
+                    stt33 += '✔'
 
             # c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66':
                 strpayload = "414c49434527532041" # ALICE'S A
                 if strpayload in j_payload:
                     if int(stt4) == j_stt:
+                        stt4 += '✔'
                         score += 0.2
-                    if souIP4 == j_src_ip:    
+                    if souIP4 == j_src_ip:   
+                        souIP4 += '✔' 
                         score += 0.1
                     if desIP4 == '202.191.56.66':
+                        desIP4 += '✔'
                         score += 0.1
                     if int(souPort4) == j_src_port:
+                        souPort4 += '✔'
                         score += 0.2
                     if int(desPort4) == j_dst_port:
+                        desPort4 += '✔'
                         score += 0.2
                     if int(seq4) == j_seq:
+                        seq4 += '✔'
                         score += 0.2
                     if int(ack4) == 1:
+                        ack4 += '✔'
                         score += 0.2
                     if int(lenghttcp4) == 20:
+                        lenghttcp4 += '✔'
                         score += 0.2
                     if int(lenghtdata4) == j_lenght_payload:
+                        lenghtdata4 += '✔'
                         score += 0.2
                     if flag4 == 'ACK':
+                        flag4 += '✔'
                         score += 0.2
                     if int(floor4) == 4:
+                        floor4 += '✔'
                         score += 0.2
                     
                     start_stt4 = j_stt
@@ -781,26 +742,37 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt5 = False
                     if int(stt5) == j_stt:
+                        stt5 += '✔'
                         score += 0.2
                     if souIP5 == j_src_ip:    
+                        souIP5 += '✔'
                         score += 0.1
                     if desIP5 == j_dst_ip:
+                        desIP5 += '✔'
                         score += 0.1
                     if int(souPort5) == j_src_port:
+                        souPort5 += '✔'
                         score += 0.2
                     if int(desPort5) == j_dst_port:
+                        desPort5 += '✔'
                         score += 0.2
                     if int(seq5) == j_seq:
+                        seq5 += '✔'
                         score += 0.2
                     if int(ack5) == start_ack5:
+                        ack5 += '✔'
                         score += 0.2
                     if int(lenghttcp5) == 20:
+                        lenghttcp5 += '✔'
                         score += 0.2
                     if int(lenghtdata5) == 0:
+                        lenghtdata5 += '✔'
                         score += 0.2
                     if flag5 == 'ACK':
+                        flag5 += '✔'
                         score += 0.2
                     if int(success5) == 1:
+                        success5 += '✔'
                         score += 0.2
                     
             # c6
@@ -809,6 +781,7 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt6 = False
                     if int(seq6) == j_seq:
+                        seq6 += '✔'
                         score += 1
             
             # c7
@@ -817,21 +790,27 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt7 = False
                     if int(stt7) == j_stt:
+                        stt7 += '✔'
                         score += 0.2
                     if nhiphan7 == '000000010001':
+                        nhiphan7 += '✔'
                         score += 0.2
                     if ('FIN' in flag7) and ('ACK' in flag7):
+                        flag7 += '✔'
                         score += 0.2
                     if int(seq7) == j_seq:
+                        seq7 += '✔'
                         score += 0.2
                     
                     if int(lenghtdata7) == 0:
+                        lenghtdata7 += '✔'
                         score += 0.2
 
             #8
             if j_bps > max_bps:
                 max_bps = j_bps
             if max_bps == bps8:
+                bp8 += '✔'
                 score += 0.5
 
         # Lưu submission
@@ -845,6 +824,151 @@ class submitEx4(LoginRequiredMixin, View):
         #     submission.score = score
         #     submission.is_submitted = True
         #     submission.save()
+        if stt == -1:
+            stt = ''
+        if souPort == -1:
+            souPort = ''
+        if desPort == -1:
+            desPort = ''
+        if floor == -1:
+            floor = ''
+        if stt2 == -1:
+            stt2 = ''
+        if success2 == -1:
+            success2 = ''
+        if souPort3 == -1:
+            souPort3 = ''
+        if desPort3 == -1:
+            desPort3 = ''
+        if stt31 == -1:
+            stt31 = ''
+        
+        if seq31 == -1:
+            seq31 = ''
+        if ack31 == -1:
+            ack31 = ''
+        if lenghtdata31 == -1:
+            lenghtdata31 = ''
+        if stt32 == -1:
+            stt32 = ''
+        if nhiphan32 == -1:
+            nhiphan32 = ''
+        
+        if seq32 == -1:
+            seq32 = ''
+        if ack32 == -1:
+            ack32 = ''
+        if lenghtdata32 == -1:
+            lenghtdata32 = ''
+        if stt33 == -1:
+            stt33 = ''
+        
+        if seq33 == -1:
+            seq33 = ''
+        if ack33 == -1:
+            ack33 = ''
+        if lenghtdata33 == -1:
+            lenghtdata33 = ''
+        if stt4 == -1:
+            stt4 = ''
+        
+        if souPort4 == -1:
+            souPort4 = ''
+        if desPort4 == -1:
+            desPort4 = ''
+
+        if seq4 == -1:
+            seq4 = ''
+        if ack4 == -1:
+            ack4 = ''
+        if lenghttcp4 == -1:
+            lenghttcp4 = ''
+        if lenghtdata4 == -1:
+            lenghtdata4 = ''
+        
+        if floor4 == -1:
+            floor4 = ''
+        if success5 == -1:
+            success5 = ''
+        if seq6 == -1:
+            seq6 = ''
+        if stt7 == -1:
+            stt7 = ''
+        
+        if seq7 == -1:
+            seq7 = ''
+        if ack7 == -1:
+            ack7 = ''
+        if lenghtdata7 == -1:
+            lenghtdata7 = ''
+        if bps8 == -111:
+            bps8 = ''
+        
+        answers = {
+            '1.Số thứ tự gói tin': stt,
+            '1.Địa chỉ IP nguồn': souIP,
+            '1.Địa chỉ IP đích': desIP,
+            '1.Cổng nguồn': souPort,
+            '1.Cổng đích': desPort,
+            '1.Tầng': floor,
+            '2.Số thứ tự gói tin': stt2,
+            '2.Lý do': request.POST.get('reason21'),
+            '2.Thành công hay không?': success2,
+            '2.Lý do 2': request.POST.get('reason22'),
+            '3.Địa chỉ IP nguồn': souIP3,
+            '3.Địa chỉ IP đích': desIP3,
+            '3.Cổng nguồn': souPort3,
+            '3.Cổng đích': desPort3,
+            '3.1.Số thứ tự gói tin': stt31,
+            '3.1.Giá trị nhị phân trường Flag': nhiphan31,
+            '3.1.Các cờ thiết lập': flag31,
+            '3.1.Sequence number': seq31,
+            '3.1.Ack number': ack31,
+            '3.1.Kích thước phần dữ liệu': lenghtdata31,
+            '3.2.Số thứ tự gói tin': stt32,
+            '3.2.Giá trị nhị phân trường Flag': nhiphan32,
+            '3.2.Các cờ thiết lập': flag32,
+            '3.2.Sequence number': seq32,
+            '3.2.Ack number': ack32,
+            '3.2.Kích thước phần dữ liệu': lenghtdata32,
+            '3.3.Số thứ tự gói tin': stt33,
+            '3.3.Giá trị nhị phân trường Flag': nhiphan33,
+            '3.3.Các cờ thiết lập': flag33,
+            '3.3.Sequence number': seq33,
+            '3.3.Ack number': ack33,
+            '3.3.Kích thước phần dữ liệu': lenghtdata33,
+            '4.Số thứ tự gói tin': stt4,
+            '4.Địa chỉ IP nguồn': souIP4,
+            '4.Địa chỉ IP đích': desIP4,
+            '4.Cổng nguồn': souPort4,
+            '4.Cổng đích': desPort4,
+            '4.Sequence number': seq4,
+            '4.Ack number': ack4,
+            '4.Kích thước phần tiêu đề': lenghttcp4,
+            '4.Kích thước phần dữ liệu': lenghtdata4,
+            '4.Các cờ thiết lập': flag4,
+            '4.Tầng mạng': floor4,
+            '5.Số thứ tự gói tin': stt4,
+            '5.Địa chỉ IP nguồn': souIP4,
+            '5.Địa chỉ IP đích': desIP4,
+            '5.Cổng nguồn': souPort4,
+            '5.Cổng đích': desPort4,
+            '5.Sequence number': seq4,
+            '5.Ack number': ack4,
+            '5.Kích thước phần tiêu đề': lenghttcp4,
+            '5.Kích thước phần dữ liệu': lenghtdata4,
+            '5 .Các cờ thiết lập': flag4,
+            '5.Kết luận': success5,
+            '5.Lý do': request.POST.get('reason5'),
+            '6.Sequence number': seq6,
+            '7.Số thứ tự gói tin': stt7,
+            '7.Giá trị nhị phân trường Flag': nhiphan7,
+            '7.Các cờ thiết lập': flag7,
+            '7.Sequence number': seq7,
+            '7.Ack number': ack7,
+            '7.Kích thước phần dữ liệu': lenghtdata7,
+            '8.Thông lượng trung bình': bps8
+        }
 
         # return redirect('view_result', assignment_id=assignment.id)
         submission, created = Submission.objects.get_or_create(
@@ -877,13 +1001,13 @@ class submitEx5(LoginRequiredMixin, View):
         protocol = request.POST.get('protocol')
         souIP = request.POST.get('souIP')
         desIP = request.POST.get('desIP')
-        souPort = request.POST.get('souPort')
-        desPort = request.POST.get('desPort')
+        souPort = int(request.POST.get('souPort') or -1)
+        desPort = int(request.POST.get('desPort') or -1)
         type1 = request.POST.get('type1')
         port1 = request.POST.get('port1')
 
         #c2
-        stt2 = int(request.POST.get('stt2') or -111)
+        stt2 = int(request.POST.get('stt2') or -1)
         protocol2 = request.POST.get('protocol2')
         souIP2 = request.POST.get('souIP2')
         desIP2 = request.POST.get('desIP2')
@@ -901,8 +1025,8 @@ class submitEx5(LoginRequiredMixin, View):
         stt41 = request.POST.get('stt41')
         stt42 = request.POST.get('stt42')
         stt43 = request.POST.get('stt43')
-        port41a = int(request.POST.get('port41a') or -111)
-        port41b = int(request.POST.get('port41b') or -111)
+        port41a = int(request.POST.get('port41a') or -1)
+        port41b = int(request.POST.get('port41b') or -1)
         port42 = request.POST.get('port42')
 
         #c5
@@ -918,8 +1042,8 @@ class submitEx5(LoginRequiredMixin, View):
         phienban7 = request.POST.get('phienban7')
         truong7 = request.POST.get('truong7')                    
         data7 = request.POST.get('data7')
-        length7 = int(request.POST.get('lenght7') or -111)
-        goi7 = int(request.POST.get('goi7') or -111)
+        length7 = int(request.POST.get('lenght7') or -1)
+        goi7 = int(request.POST.get('goi7') or -1)
 
         #c8
         mien8 = request.POST.get('mien8')
@@ -956,85 +1080,223 @@ class submitEx5(LoginRequiredMixin, View):
             if stt == j_stt and j_dns == '1':
                 start2 = True
                 if protocol == 'UDP':
+                    protocol += '✔'
                     score += 0.1
                 if souIP == j_src_ip:
+                    souIP += '✔'
                     score += 0.1
                 if desIP == j_dst_ip:
                     score += 0.1
+                    desIP += '✔'
                 if souPort == j_src_port:
                     score += 0.1
+                    souPort += '✔'
                 if desPort == j_dst_port:
                     score += 0.1
+                    desPort += '✔'
                 if port1 == 'DNS':
+                    port1 += '✔'
                     score += 0.1
                 if type1 == 'A':
                     score += 0.1
+                    type1 += '✔'
 
             #c2
             if j_src_ip == '1.1.1.1' and start2 and j_dns == '1':
                 start2 = False
                 if stt2 == j_stt:
+                    stt2 += '✔'
                     score += 0.1
                 if protocol2 == 'UDP':
+                    protocol2 += '✔'
                     score += 0.1
                 if souIP2 == j_src_ip:
+                    souIP2 += '✔'
                     score += 0.1
                 if desIP2 == j_dst_ip:
+                    desIP2 += '✔'
                     score += 0.1
                 if souPort2 == j_src_port:
+                    souPort2 += '✔'
                     score += 0.1
                 if desPort2 == j_dst_port:
+                    desPort2 += '✔'
                     score += 0.1
                 if type2 == 'A':
+                    type2 += '✔'
                     score += 0.1
                 if mien2 == 'nct.soict.hust.edu.vn':
+                    mien2 += '✔'
                     score += 0.1
                 if mienIP2 == '202.191.56.66':
+                    mienIP2 += '✔'
                     score += 0.1
 
             #c3
             if 'lingosolution.co.uk' in mien3:
+                mien3 += '✔'
                 score += 0.3
             if mienIP3 == '149.255.58.41':
+                mienIP3 += '✔'
                 score += 0.4
 
             #c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
                 start_syn3 = False
                 if stt41 == j_stt:
+                    stt41 += '✔'
                     score += 0.2
                 if port41a == j_src_ip:
+                    port41a += '✔'
                     score += 0.2
                 if port41b == j_dst_ip:
                     score += 0.2
+                    port41b += '✔'
             
             if port42 == 'HTTP':
+                port42 += '✔'
                 score += 0.2
 
             if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
                 start_synack3 = False
                 if stt42 == j_stt:
+                    stt42 += '✔'
                     score += 0.2
             
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
                 start_ack3 = False
                 if stt43 == j_stt:
+                    stt43 += '✔'
                     score += 0.2
             
             #c5
 
             #c6
             if protocol6 == 'TCP':
+                protocol6 += '✔'
                 score += 0.2
             if port6 == 80:
+                port6 += '✔'
                 score += 0.2
             if 'HTTP' in phienban6 and '1.1' in phienban6:
                 score += 0.2
+                phienban6 += '✔'
             if 'keep-alive' in truong6:
                 score += 0.2
+                truong6 += '✔'
 
             #c7
-            
+            if 'HTTP' in phienban7 and '1.1' in phienban7:
+                score += 0.2
+                phienban7 += '✔'
+            if 'keep-alive' in truong7:
+                score += 0.2
+                truong7 += '✔'
+            if 'text/html' in data7:
+                score += 0.2
+                data7 += '✔'
+            if length7 == j_lenght_payload:
+                score += 0.2
+                length7 += '✔'
+            if goi7 == 16:
+                score += 0.2
+                goi7 += '✔'
+
+            #c8
+            if 'lingosolution.co.uk' in mien8:
+                score += 0.2
+                mien8 += '✔'
+            if mienIP8 == '149.255.58.41':
+                score += 0.2
+                mienIP8 += '✔'
+            if truong8 == 'http://nct.soict.hust.edu.vn/':
+                score += 0.2
+                truong8 += '✔'
+
+        if stt == -1:
+            stt = ''
+        if stt2 == -1:
+            stt2 = ''
+        if souPort == -1:
+            souPort = ''
+        if desPort == -1:
+            desPort = ''
+        if souPort2 == -1:
+            souPort2 = ''
+        if desPort2 == -1:
+            desPort2 = ''
+        if port41a == -1:
+            port41a = ''
+        if port41b == -1:
+            port41b = ''
+        if port6 == -1:
+            port6 = ''
+        if length7 == -1:
+            length7 = ''
+        if goi7 == -1:
+            goi7 = ''
+
+        answers = {
+            '1.Số thứ tự gói tin': stt,
+            '1.Giao thức tầng giao vận': protocol,
+            '1.Địa chỉ IP nguồn': souIP,
+            '1.Địa chỉ IP đích': desIP,
+            '1.Cổng nguồn': souPort,
+            '1.Cổng đích': desPort,
+            '1.Cổng dịch vụ': port1,
+            '1.Kiểu thông tin truy vấn': type1,
+            '1.Cho biết gửi đến nút mạng nào?': request.POST.get('reason12'),
+            '2.Số thứ tự gói tin': stt2,
+            '2.Giao thức tầng giao vận': protocol2,
+            '2.Địa chỉ IP nguồn': souIP2,
+            '2.Địa chỉ IP đích': desIP2,
+            '2.Cổng nguồn': souPort2,
+            '2.Cổng đích': desPort2,
+            '2.Kiểu thông tin truy vấn': type2,
+            '2.Tên miền được truy vấn': mien2,
+            '2.Địa chỉ IP của tên miền được truy vấn': mienIP2,
+            '2.Tại sao xác định được?': request.POST.get('reason2'),
+            '3.Tên miền khác được truy vấn': mien3,
+            '3.Địa chỉ IP của tên miền đó là': mienIP3,
+            '3.Tại sao': request.POST.get('reason3'),
+            '4.Số thứ tự gói 1(No)': stt41,
+            '4.Số thứ tự gói 2(No)': stt42,
+            '4.Số thứ tự gói 3(No)': stt43,
+            '4.Web Browser': port41a,
+            '4.Web Server': port41b,
+            '4.Cổng ứng dụng của dịch vụ nào?': port42,
+            '5.Những thông điệp nào được gửi đi liên tiếp mà không đợi thông điệp trả lời?': request.POST.get('thongdiep5'),
+            '5.Tại sao?': request.POST.get('reason5'),
+            '6.Giao thức tầng giao vận': protocol6,
+            '6.Số hiệu cổng ứng dụng đích': port6,
+            '6.Phiên bản của giao thức HTTP': phienban6,
+            '6.Connection': truong6,
+            '7.Phiên bản của giao thức HTTP': phienban7,
+            '7.Connection': truong7,
+            '7.Phần thân chứa dữ liệu': data7,
+            '7.Dữ liệu này có kích thước': length7,
+            '7.Bao nhiêu gói tin TCP': goi7,
+            '7.Còn duy trì không?': request.POST.get('reason7'),
+            '8.Tên miền': mien8,
+            '8.Địa chỉ IP': mienIP8,
+            '8.Tại sao:': request.POST.get('reason8'),
+            '8.Referer': truong8,
+            '9.Điền đoạn văn': request.POST.get('thieu9')
+        }
+
+        # return redirect('view_result', assignment_id=assignment.id)
+        submission, created = Submission.objects.get_or_create(
+            assignment=assignment, student=student,
+            defaults={'answers': answers, 'score': score, 'is_submitted': True}
+        )
+        if not created:
+            submission.answers = answers
+            submission.score = score
+            submission.is_submitted = True
+            submission.save()
+        print(score)
+        return redirect('view_result', assignment_id=assignment.id)
+
             
 
 def print_timestamp(ts, resol):
@@ -1260,8 +1522,10 @@ def upload_pcap(request, assignment_id):
             student=request.user,
             is_submitted=True
         )
-
-        return redirect('ex4', assignment_id=assignment.id)
+        if assignment.role == 1:
+            return redirect('ex5', assignment_id=assignment.id)
+        else:
+            return redirect('ex4', assignment_id=assignment.id)
     else:
         form = UploadFileForm(request.POST, request.FILES)
         return render(request, 'apps/student/upload_pcap.html', {'form': form, 'assignment': assignment})
