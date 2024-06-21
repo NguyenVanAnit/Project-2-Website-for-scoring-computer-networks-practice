@@ -14,6 +14,7 @@ from django.conf import settings
 from scapy.utils import RawPcapReader
 from scapy.layers.l2 import Ether
 from scapy.layers.inet import IP, TCP, UDP
+from scapy.all import DNS
 
 from .forms import UploadFileForm
 
@@ -90,14 +91,17 @@ class Login(View):
         else:
             return HttpResponse('Lỗi role')
         
+@decorators.login_required(login_url = '/login/')
 def get_home_teacher(request):
     return render(request, 'apps/teacher/home.html')
 
+@decorators.login_required(login_url = '/login/')
 def teacher_home(request):
     if request.user.role != 1:  # Check if the user is not a teacher
         return redirect('home')  # Redirect to a suitable page if the user is not a teacher
     return render(request, 'apps/teacher/home.html')
 
+@decorators.login_required(login_url = '/login/')
 def student_home(request):
     if request.user.role != 0:  # Check if the user is not a teacher
         return redirect('home')  # Redirect to a suitable page if the user is not a teacher
@@ -130,6 +134,7 @@ def create_class(request):
     return render(request, 'apps/teacher/create-class.html', {'form': form})
 
 # học sinh rời khỏi lớp
+@decorators.login_required(login_url = '/login/')
 def delete_class_for_student(request, class_id):
     class_instance = get_object_or_404(Class, id=class_id)
     student = request.user
@@ -221,7 +226,7 @@ def class_detail(request, class_id):
 #         'form2': form2,
 #         'assignments': assignments
 #     })
-
+@decorators.login_required(login_url = '/login/')
 def view_student_submission(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
     assignment = submission.assignment
@@ -234,7 +239,7 @@ def view_student_submission(request, submission_id):
         'show_score': show_score
     })
 
-
+@decorators.login_required(login_url = '/login/')
 def view_assignment_submissions(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     submissions = Submission.objects.filter(assignment_id=assignment)
@@ -293,14 +298,14 @@ def view_student_assignments(request, user_id):
     
 #     students = class_instance.students.all()
 #     return render(request, 'apps/teacher/class_detail.html', {'class_instance': class_instance, 'students': students, 'form': form, 'form2': form2, 'assignments': assignments})
-
+@decorators.login_required(login_url = '/login/')
 def student_submission_detail(request, student_id):
     student = get_object_or_404(User, id=student_id)
     submissions = Submission.objects.filter(student=student)
     return render(request, 'apps/teacher/student_submission_detail.html', {'student': student, 'submissions': submissions})
 
 
-
+@decorators.login_required(login_url = '/login/')
 def student_classes(request):
     if request.user.role != 0:  # Ensure the user is a student
         return redirect('home')
@@ -317,7 +322,7 @@ def student_classes(request):
 #         if submission:
 #             submissions[assignment.id] = submission
 #     return render(request, 'apps/student/class_detail.html', {'class_obj': class_obj, 'assignments': assignments, 'submissions': submissions})
-
+@decorators.login_required(login_url = '/login/')
 def student_class_detail(request, class_id):
     student = request.user
     class_obj = get_object_or_404(Class, id=class_id, students=student)
@@ -333,6 +338,7 @@ def student_class_detail(request, class_id):
         'submissions': submissions
     })
 
+@decorators.login_required(login_url = '/login/')
 def assignment_detail(request, assignment_id):
     assignment = get_object_or_404(Assignment, id=assignment_id)
     submission = Submission.objects.filter(assignment_id=assignment, student=request.user).first()
@@ -381,6 +387,7 @@ def addStudenToClass(request):
         
     return render(request, 'apps/teacher/add-student-to-class.html', {'form': form})
 
+@decorators.login_required(login_url = '/login/')
 def delete_student_from_class(request, class_id):
     class_instance = get_object_or_404(Class, id=class_id, teacher=request.user)
     student_id = request.GET.get('student_id')
@@ -764,7 +771,7 @@ class submitEx4(LoginRequiredMixin, View):
                         score += 0.2
                     if int(floor4) == 4:
                         score += 0.2
-                    print('c4')
+                    
                     start_stt4 = j_stt
                     start_ack5 = j_seq
 
@@ -865,7 +872,164 @@ class submitEx5(LoginRequiredMixin, View):
 
         current_time = timezone.now()
 
-        
+        #c1
+        stt = int(request.POST.get('stt') or -1)
+        protocol = request.POST.get('protocol')
+        souIP = request.POST.get('souIP')
+        desIP = request.POST.get('desIP')
+        souPort = request.POST.get('souPort')
+        desPort = request.POST.get('desPort')
+        type1 = request.POST.get('type1')
+        port1 = request.POST.get('port1')
+
+        #c2
+        stt2 = int(request.POST.get('stt2') or -111)
+        protocol2 = request.POST.get('protocol2')
+        souIP2 = request.POST.get('souIP2')
+        desIP2 = request.POST.get('desIP2')
+        souPort2 = int(request.POST.get('souPort2') or -1)
+        desPort2 = int(request.POST.get('desPort2') or -1)
+        type2 = request.POST.get('type2')
+        mien2 = request.POST.get('mien2')
+        mienIP2 = request.POST.get('mienIP2')
+
+        #c3
+        mien3 = request.POST.get('mien3')
+        mienIP3 = request.POST.get('mienIP3')
+
+        #c4
+        stt41 = request.POST.get('stt41')
+        stt42 = request.POST.get('stt42')
+        stt43 = request.POST.get('stt43')
+        port41a = int(request.POST.get('port41a') or -111)
+        port41b = int(request.POST.get('port41b') or -111)
+        port42 = request.POST.get('port42')
+
+        #c5
+        thongdiep5 = request.POST.get('thongdiep5')
+
+        #c6
+        protocol6 = request.POST.get('protocol6')
+        port6 = int(request.POST.get('port6') or -1)
+        phienban6 = request.POST.get('phienban6')
+        truong6 = request.POST.get('truong6')
+
+        #c7
+        phienban7 = request.POST.get('phienban7')
+        truong7 = request.POST.get('truong7')                    
+        data7 = request.POST.get('data7')
+        length7 = int(request.POST.get('lenght7') or -111)
+        goi7 = int(request.POST.get('goi7') or -111)
+
+        #c8
+        mien8 = request.POST.get('mien8')
+        mienIP8 = request.POST.get('mienIP8')
+        truong8 = request.POST.get('truong8')
+
+        with open('data/pcap_data.json', 'r') as json_file:
+            packets = json.load(json_file)
+
+        score = 0
+        start2 = False
+        start_syn3 = True
+        start_synack3 = True
+        start_ack3 = True
+
+        for packet in packets:
+            j_stt = packet.get('stt')
+            j_src_ip = packet.get('src_ip')
+            j_dst_ip = packet.get('dst_ip')
+            j_src_port = packet.get('src_port')
+            j_dst_port = packet.get('dst_port')
+            j_protocol = packet.get('protocol')
+            j_payload = packet.get('payload')
+            j_payload = str(j_payload)
+            j_seq = packet.get('seq')
+            j_ack = packet.get('ack')
+            j_lenght_payload = packet.get('lenght_payload')
+            j_fin = packet.get('fin')
+            j_bps = packet.get('bps')
+            j_syn = packet.get('syn')
+            j_dns = packet.get('dns')
+
+            #c1
+            if stt == j_stt and j_dns == '1':
+                start2 = True
+                if protocol == 'UDP':
+                    score += 0.1
+                if souIP == j_src_ip:
+                    score += 0.1
+                if desIP == j_dst_ip:
+                    score += 0.1
+                if souPort == j_src_port:
+                    score += 0.1
+                if desPort == j_dst_port:
+                    score += 0.1
+                if port1 == 'DNS':
+                    score += 0.1
+                if type1 == 'A':
+                    score += 0.1
+
+            #c2
+            if j_src_ip == '1.1.1.1' and start2 and j_dns == '1':
+                start2 = False
+                if stt2 == j_stt:
+                    score += 0.1
+                if protocol2 == 'UDP':
+                    score += 0.1
+                if souIP2 == j_src_ip:
+                    score += 0.1
+                if desIP2 == j_dst_ip:
+                    score += 0.1
+                if souPort2 == j_src_port:
+                    score += 0.1
+                if desPort2 == j_dst_port:
+                    score += 0.1
+                if type2 == 'A':
+                    score += 0.1
+                if mien2 == 'nct.soict.hust.edu.vn':
+                    score += 0.1
+                if mienIP2 == '202.191.56.66':
+                    score += 0.1
+
+            #c3
+            if 'lingosolution.co.uk' in mien3:
+                score += 0.3
+            if mienIP3 == '149.255.58.41':
+                score += 0.4
+
+            #c4
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
+                start_syn3 = False
+                if stt41 == j_stt:
+                    score += 0.2
+                if port41a == j_src_ip:
+                    score += 0.2
+                if port41b == j_dst_ip:
+                    score += 0.2
+            
+            if port42 == 'HTTP':
+                score += 0.2
+
+            if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
+                start_synack3 = False
+                if stt42 == j_stt:
+                    score += 0.2
+            
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
+                start_ack3 = False
+                if stt43 == j_stt:
+                    score += 0.2
+            
+            #c5
+
+            #c6
+            if protocol6 == 'TCP':
+                score += 0.2
+            if port6 == 80:
+                score += 0.2
+            if 'HTTP' in phienban6 and '1.1' in phienban6
+            
 
 def print_timestamp(ts, resol):
     # chuyển thời gian thành đơn vị giây
@@ -920,6 +1084,8 @@ def upload_pcap(request, assignment_id):
         connection_found2 = False
         total_data_bytes = 0
 
+        dns_number = 0
+
         for (pkt_data, pkt_metadata,) in packets:
             count += 1
 
@@ -935,6 +1101,10 @@ def upload_pcap(request, assignment_id):
 
             # giúp truy cập và lưu trữ gói tin IP bên trong gói Ethernet vào một biến mới là ip_pkt
             ip_pkt = ether_pkt[IP]
+
+            if ip_pkt.haslayer(DNS):
+                dns_number = 1
+
             # truy cập trường proto trong gói IP, proto == 6 đại diện cho gói tin TCP
             if ip_pkt.proto == 6:
                 # giúp truy cập và lưu trữ gói tin TCP bên trong gói IP và lưu vào biến mới là tcp_pkt
@@ -1047,8 +1217,10 @@ def upload_pcap(request, assignment_id):
                     'lenght_payload': len(tcp_pkt.payload),
                     'fin': fin,
                     'bps': bps,
-                    'syn': syn
+                    'syn': syn,
+                    'dns': dns_number
                 }
+                dns_number = 0
             elif ip_pkt.proto == 17:
                 tcp_pkt = ip_pkt[UDP]
                 packet_info = {
@@ -1064,8 +1236,10 @@ def upload_pcap(request, assignment_id):
                     'lenght_payload': 0,
                     'fin': -1,
                     'bps': 0,
-                    'syn': -1
+                    'syn': -1,
+                    'dns': dns_number
                 }     
+                dns_number = 0
             else:
                 continue
             

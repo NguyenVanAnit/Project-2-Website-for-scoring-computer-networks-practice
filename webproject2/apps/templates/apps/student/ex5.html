@@ -56,9 +56,9 @@
                 <label for="">Số hiệu cổng đích</label>
                 <input type="number" name="desPort" ><br>
                 <label for="">Đây là số hiệu cổng ứng dụng của dịch vụ nào?</label>
-                <textarea name="reason" rows="1" cols="70"><br>
+                <input type="text" name="port1">
                 <label for="">Kiểu thông tin truy vấn(Type)</label>
-                <input type="text" name="type"><br>
+                <input type="text" name="type1"><br>
                 <label for="">Qua việc xác định các thông số mạng trên máy trạm của sinh viên ở mục 3.1, cho biết thông điệp này được gửi tới nút mạng nào?</label><br>
                 <textarea name="reason12" id="" rows="1" cols="70"></textarea>
             </div>
@@ -82,192 +82,89 @@
                 <label for="">Tên miền được truy vấn</label>
                 <input type="text" name="mien2">
                 <label for="">Địa chỉ IP của tên miền được truy vấn</label>
-                <input type="text" name="mienIP">
+                <input type="text" name="mienIP2">
                 <label for="">Tại sao xác định được đây là thông điệp trả lời cho thông điệp yêu cầu ở bước 2?</label><br>
                 <textarea name="reason2" id="" rows="1" cols="70"></textarea>
             </div>
 
             <div class="cauhoi mt-3 pb-3">
                 <h3>Câu 3 (2.5đ)</h3>
-                <label for="">Địa chỉ IP bên khởi tạo</label>
-                <input type="text" name="souIP3"><br>
-                <label for="">Địa chỉ IP bên đáp ứng</label>
-                <input type="text" name="desIP3"><br>
-                <label for="">Số hiệu cổng ứng dụng bên khởi tạo</label>
-                <input type="number" name="souPort3"><br>
-                <label for="">Số hiệu cổng ứng dụng bên đáp ứng</label>
-                <input type="number" name="desPort3"><br>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">STT gói tin (No.)</th>
-                            <th scope="col">Giá trị nhị phân của trường Flag</th>
-                            <th scope="col">Các cờ được thiết lập</th>
-                            <th scope="col">Sequence number</th>
-                            <th scope="col">ACK number</th>
-                            <th scope="col">Kích thước phần dữ liệu</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="number" name="stt31">
-                            </td>
-                            <td>
-                                <input type="text" name="nhiphan31">
-                            </td>
-                            <td>
-                                <input type="text" name="flag31">
-                            </td>
-                            <td>
-                                <input type="number" name="seq31">
-                            </td>
-                            <td>
-                                <input type="number" name="ack31">
-                            </td>
-                            <td>
-                                <input type="number" name="lenghtdata31">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="number" name="stt32">
-                            </td>
-                            <td>
-                                <input type="text" name="nhiphan32">
-                            </td>
-                            <td>
-                                <input type="text" name="flag32">
-                            </td>
-                            <td>
-                                <input type="number" name="seq32">
-                            </td>
-                            <td>
-                                <input type="number" name="ack32">
-                            </td>
-                            <td>
-                                <input type="number" name="lenghtdata32">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="number" name="stt33">
-                            </td>
-                            <td>
-                                <input type="text" name="nhiphan33">
-                            </td>
-                            <td>
-                                <input type="text" name="flag33">
-                            </td>
-                            <td>
-                                <input type="number" name="seq33">
-                            </td>
-                            <td>
-                                <input type="number" name="ack33">
-                            </td>
-                            <td>
-                                <input type="number" name="lenghtdata33">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <label for="">Tên miền khác được truy vấn là</label>
+                <input type="text" name="mien3">
+                <label for="">Địa chỉ IP của tên miền đó là</label>
+                <input type="text" name="mienIP3">
+                <label for="">Tại sao</label>
+                <input type="text">
             </div>
 
             <div class="cauhoi mt-3 pb-3">
                 <h3>Câu 4 (2đ)</h3>
-                <label for="">STT gói tin (No.):</label>
-                <input type="number" name="stt4" ><br>
-                <label for="">Địa chỉ IP bên khởi tạo</label>
-                <input type="text" name="souIP4" ><br>
-                <label for="">Địa chỉ IP bên đáp ứng</label>
-                <input type="text" name="desIP4" ><br>
-                <label for="">Số hiệu cổng ứng dụng bên khởi tạo</label>
-                <input type="number" name="souPort4" ><br>
-                <label for="">Số hiệu cổng ứng dụng bên đáp ứng</label>
-                <input type="number" name="desPort4" ><br>
-                <label for="">Sequence Number</label>
-                <input type="number" name="seq4" ><br>
-                <label for="">ACK Number</label>
-                <input type="number" name="ack4" ><br>
-                <label for="">Kích thước phần tiêu đề TCP (bytes)</label>
-                <input type="number" name="lenghttcp4" ><br>
-                <label for="">Kích thước phần dữ liệu (bytes)</label>
-                <input type="number" name="lenghtdata4" ><br>
-                <label for="">Các cờ được thiết lập</label>
-                <input type="text" name="flag4" >
-                <br>
-                <label for="">Gói tin này được đóng gói vào gói tin của giao thức tầng mạng nào?</label><br>
-                <input type="radio" name="floor4" value="1">
-                <label for="">Tầng vật lý</label>
-                <input type="radio" name="floor4" value="2">
-                <label for="">Tầng Data Link</label>
-                <input type="radio" name="floor4" value="3">
-                <label for="">Tầng IP</label>
-                <input type="radio" name="floor4" value="4">
-                <label for="">Tầng giao vận</label>
-                <input type="radio" name="floor4" value="5">
-                <label for="">Tầng ứng dụng</label>
+                <label for="">Trước khi thông điệp HTTP đầu tiên được gửi đi tới máy chủ 
+                    nct.soict.hust.edu.vn, máy trạm và máy chủ đã thực hiện quá trình gì?</label>
+                <textarea name="reason4" id=""></textarea>
+                <label for="">Số thứ tự (No) của các gói tin trong quá trình đó mà sinh viên quan sát được là gì?</label>
+                <input type="text" name="stt41">
+                <input type="text" name="stt42">
+                <input type="text" name="stt43">
+                <label for=""> Số hiệu cổng ứng dụng của các bên đã sử dụng là bao nhiêu?</label>
+                <input type="number" name="port41">
+                <label for=""> Số hiệu cổng ứng dụng trên máy chủ là cổng ứng dụng của dịch vụ nào?</label>
+                <input type="text" name="port42">
             </div>
 
             <div class="cauhoi mt-3 pb-3">
                 <h3>Câu 5 (2đ)</h3>
-                <label for="">STT gói tin (No.):</label>
-                <input type="number" name="stt5" ><br>
-                <label for="">Địa chỉ IP nguồn</label>
-                <input type="text" name="souIP5" ><br>
-                <label for="">Địa chỉ IP đích</label>
-                <input type="text" name="desIP5" ><br>
-                <label for="">Số hiệu cổng nguồn</label>
-                <input type="number" name="souPort5" ><br>
-                <label for="">Số hiệu cổng đích</label>
-                <input type="number" name="desPort5" ><br>
-                <label for="">Sequence Number</label>
-                <input type="number" name="seq5" ><br>
-                <label for="">ACK Number</label>
-                <input type="number" name="ack5" ><br>
-                <label for="">Kích thước phần tiêu đề TCP (bytes)</label>
-                <input type="number" name="lenghttcp5" ><br>
-                <label for="">Kích thước phần dữ liệu (bytes)</label>
-                <input type="number" name="lenghtdata5" ><br>
-                <label for="">Các cờ được thiết lập</label>
-                <input type="text" name="flag5" >
-                <br>
-                <label for="">Có thể kết luận chắc chắn Web Server đã nhận thành công gói tin ở bước 4 hay không?</label><br>
-                <input type="radio" name="success5" value="0">
-                <label for="">Không</label>
-                <input type="radio" name="success5" value="1">
-                <label for="">Có</label>
-                <br>
-                <label for="">Tại sao?</label><br>
-                <textarea name="reason5" id="" rows="4" cols="50"></textarea>
+                <label for="">Trong các thông điệp HTTP Request, có những thông điệp nào được gửi đi liên tiếp mà không đợi thông điệp trả lời từ máy chủ không?</label>
+                <input type="text" name="thongdiep5">
+                <label for=""> Nếu có, tại sao trình duyệt Web trên máy trạm thực hiện như vậy?</label>
+                <textarea name="reason5" id="" rows="2" cols="70"></textarea>
             </div>
 
             <div class="cauhoi mt-3 pb-3">
                 <h3>Câu 6 (0.5đ)</h3>
-                <label for="">Gói tin tiếp theo chứa dữ liệu của file được Web Browser gửi đi có giá trị Sequence Number là bao nhiêu?</label>
-                <input type="number" name="seq6">
+                <label for="">Giao thức tầng giao vận được sử dụng để truyền thông điệp</label>
+                <input type="text" name="protocol6">
+                <label for="">Số hiệu cổng ứng dụng đích</label>
+                <input type="number" name="port6">
+                <label for="">Phiên bản của giao thức HTTP mà máy trạm sử dụng</label>
+                <input type="text" name="phienban6">
+                <label for="">Giá trị của trường Connection trong tiêu đề HTTP</label>
+                <input type="text" name="truong6">
             </div>
 
             <div class="cauhoi mt-3 pb-3">
                 <h3>Câu 7 (1đ)</h3>
-                <label for="">STT gói tin (No.):</label>
-                <input type="number" name="stt7" ><br>
-                <label for="">Giá trị nhị phân của trường Flags</label>
-                <input type="text" name="nhiphan7" ><br>
-                <label for="">Các cờ được thiết lập</label>
-                <input type="text" name="flag7" ><br>
-                <label for="">Sequence Number</label>
-                <input type="number" name="seq7" ><br>
-                <label for="">ACK Number</label>
-                <input type="number" name="ack7" ><br>
-                <label for="">Kích thước phần dữ liệu (bytes)</label>
-                <input type="number" name="lenghtdata7" ><br>
+                <label for="">Phiên bản của giao thức HTTP mà máy chủ sử dụng</label>
+                <input type="text" name="phienban7" ><br>
+                <label for="">Giá trị của trường Connection trong tiêu đề HTTP</label>
+                <input type="text" name="truong7" ><br>
+                <label for="">Phần thân chứa dữ liệu gì</label>
+                <input type="text" name="data7" ><br>
+                <label for="">Dữ liệu này có kích thước là bao nhiêu</label>
+                <input type="number" name="length7" ><br>
+                <label for="">Thông điệp này đóng gói trong bao nhiêu gói tin TCP</label>
+                <input type="number" name="goi7" ><br>
+                <label for="">Sau khi thông điệp này được gửi đi, kết nối TCP còn được duy trì không?</label>
+                <textarea name="reason7" id="" rows="2" cols="70"></textarea>
             </div>
 
             <div class="cauhoi mt-3 pb-3">
                 <h3>Câu 8 (0.5đ)</h3>
-                <label for=""> Tính thông lượng trung bình trên liên kết TCP trong quá trình upload file lên máy chủ</label>
-                <input type="text" name="bps8">
+                <label for="">Tên miền</label>
+                <input type="text" name="mien8">
+                <label for="">Địa chỉ IP</label>
+                <input type="text" name="mienIP8" id="">
+                <label for="">Tại sao máy trạm phát đi thông điệp này?</label>
+                <textarea name="reason8" id="" rows="2" cols="70"></textarea>
+                <label for="">Giá trị trường Referer</label>
+                <input type="text" name="truong8" id="">
+            </div>
+
+            <div class="cauhoi mt-3 pb-3">
+                <h3>Câu 9</h3>
+                <label for="">Đoạn sau đây mô tả ngắn gọn quá trình xử lý truy cập vào một 
+                    trang Web trên trình duyệt Web. Hãy điền vào chỗ trống cụm từ còn thiếu</label>
+                <textarea name="thieu9" id=""></textarea>
             </div>
 
             <div class="d-flex justify-content-center">
