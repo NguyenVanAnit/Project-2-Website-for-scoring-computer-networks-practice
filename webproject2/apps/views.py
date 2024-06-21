@@ -1028,7 +1028,13 @@ class submitEx5(LoginRequiredMixin, View):
                 score += 0.2
             if port6 == 80:
                 score += 0.2
-            if 'HTTP' in phienban6 and '1.1' in phienban6
+            if 'HTTP' in phienban6 and '1.1' in phienban6:
+                score += 0.2
+            if 'keep-alive' in truong6:
+                score += 0.2
+
+            #c7
+            
             
 
 def print_timestamp(ts, resol):
