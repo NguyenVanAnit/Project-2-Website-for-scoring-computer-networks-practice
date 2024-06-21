@@ -56,5 +56,5 @@
 #
     role = models.IntegerField(choices=ROLE_CHOICES, default=0)
     user_id = models.IntegerField(unique=True, default=20210001)
-- Ví dụ, trước khi tạo tài khoản có user_id là 20210001 thì cần sửa như ví dụ trên.
+- Ví dụ, trước khi tạo tài khoản sinh viên có user_id là 20210001 thì cần sửa như ví dụ trên.
 # Cảm ơn đã ghé thăm sản phẩm, sản phẩm còn nhiều thiếu sót, hy vọng không ảnh hưởng đến bạn. 
