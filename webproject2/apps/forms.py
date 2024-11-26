@@ -7,8 +7,13 @@ class UploadFileForm(forms.Form):
     file = forms.FileField()
 
 class AddStudentForm(forms.Form):
-    user_id = forms.IntegerField(label="Student User ID")
-    class_id = forms.ModelChoiceField(queryset=Class.objects.all(), label="Class")
+    user_id = forms.CharField(
+        required=False,  # Cho phép trống vì có thể dùng file CSV
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Nhập ID sinh viên'
+        })
+    )
 
 class CreateClassForm(forms.ModelForm):
     class Meta:

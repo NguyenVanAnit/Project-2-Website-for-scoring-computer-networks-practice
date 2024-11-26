@@ -32,6 +32,8 @@ from django.contrib.auth import logout
 import binascii
 import time
 
+import csv
+
 
 # Create your views here.
 def home(request):
@@ -157,17 +159,62 @@ def class_detail(request, class_id):
     if request.method == 'POST':
         if 'add_student' in request.POST:
             form = AddStudentForm(request.POST)
+            # if form.is_valid():
+            #     user_id = form.cleaned_data['user_id']
+            #     csv_file = request.FILES.get('csv_file')
+
+            #     if csv_file:
+            #         decoded_file = csv_file.read().decode('utf-8').splitlines()
+            #         reader = csv.reader(decoded_file)
+            #         for row in reader:
+            #             user_id = row[0]
+            #             try:
+            #                 student = User.objects.get(user_id=user_id)
+            #                 if student.role != 0:
+            #                     messages.error(request, 'The user is not a student.')
+            #                 else:
+            #                     class_instance.students.add(student)
+            #                     messages.success(request, f'Sinh viên {student.username} được thêm vào {class_instance.name}.')
+            #             except User.DoesNotExist:
+            #                 messages.error(request, 'Không có ID của sinh viên trên.')
+            #     else:
+            #         try:
+            #             student = User.objects.get(user_id=user_id)
+            #             if student.role != 0:
+            #                 messages.error(request, 'The user is not a student.')
+            #             else:
+            #                 class_instance.students.add(student)
+            #                 messages.success(request, f'Sinh viên {student.username} được thêm vào {class_instance.name}.')
+            #         except User.DoesNotExist:
+            #             messages.error(request, 'Không có ID của sinh viên trên.')
+            # return redirect('class_detail', class_id=class_instance.id)
+            form = AddStudentForm(request.POST)
             if form.is_valid():
-                user_id = form.cleaned_data['user_id']
-                try:
-                    student = User.objects.get(user_id=user_id)
-                    if student.role != 0:
-                        messages.error(request, 'The user is not a student.')
-                    else:
+                def add_single_student(user_id):
+                    try:
+                        student = User.objects.get(user_id=user_id)
+                        if student.role != 0:
+                            messages.error(request, f'{student.username} không phải là học sinh')
+                            return False
                         class_instance.students.add(student)
-                        messages.success(request, f'Student {student.username} added to class {class_instance.name}.')
-                except User.DoesNotExist:
-                    messages.error(request, 'Student with the given User ID does not exist.')
+                        messages.success(request, f'Sinh viên {student.username} được thêm vào {class_instance.name}.')
+                        return True
+                    except User.DoesNotExist:
+                        messages.error(request, f'Không có sinh viên có ID {user_id} trên.')
+                        return False
+
+                csv_file = request.FILES.get('csv_file')
+                if csv_file:
+                    # Xử lý file CSV
+                    decoded_file = csv_file.read().decode('utf-8').splitlines()
+                    reader = csv.reader(decoded_file)
+                    for row in reader:
+                        if row:  # Kiểm tra hàng không rỗng
+                            add_single_student(row[0])
+                else:
+                    # Xử lý thêm một sinh viên
+                    add_single_student(form.cleaned_data['user_id'])
+
             return redirect('class_detail', class_id=class_instance.id)
         elif 'add_assignment' in request.POST:
             form2 = AssignmentForm(request.POST)
@@ -363,7 +410,7 @@ class ViewResult(LoginRequiredMixin, View):
             'is_past_deadline': is_past_deadline
         })
 
-def addStudenToClass(request):
+def addStudentToClass(request):
     if request.method == 'POST':
         form = AddStudentForm(request.POST)
         if form.is_valid:
@@ -645,7 +692,7 @@ class submitEx4(LoginRequiredMixin, View):
                 if int(desPort) == j_dst_port:
                     desPort += '✔'
                     score += 0.2
-                if int(floor) == 4:
+                if int(floor) == 1:
                     floor += '✔'
                     score += 0.2
 
@@ -729,7 +776,7 @@ class submitEx4(LoginRequiredMixin, View):
                     if flag4 == 'ACK':
                         flag4 += '✔'
                         score += 0.2
-                    if int(floor4) == 4:
+                    if int(floor4) == 2:
                         floor4 += '✔'
                         score += 0.2
                     
