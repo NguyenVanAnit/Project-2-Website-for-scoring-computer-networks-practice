@@ -11,36 +11,15 @@
 <body>
     {% load custom_tags %}
     <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'home-teacher' %}">Hust Network</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'list-classes' %}">Danh sách lớp học của tôi</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'create-class' %}">Tạo lớp học mới</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                        </li>
-                    </ul>
-                <div class="nav-item">
-                    <a class="nav-link active text-secondary" aria-current="page" href="#">{{ request.user.username }}</a>
-                </div>
-                    <div class="nav-item">
-                        <a class="nav-link active text-secondary" aria-current="page" href="{% url 'logout' %}">Đăng xuất</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        {% include '../partials/nav.html' %}
         
-        <h3 class="text-success">Bài nộp của học sinh: {{ submission.student.username }}</h3>
+        <h3 class="text-success">Bài nộp của sinh viên: {{ submission.student.username }}</h3>
         <h3 class="text-primary">Kết quả bài nộp cho {{ assignment.name }}</h3>
         <p>Thời gian nộp: {{ submission.submission_time }}</p>
-        
+
+        <h4>{{submission.answers}}</h4>
+        <h4>{{submission.student_input}}</h4>   
+
         <div>
             <h3>Câu trả lời của sinh viên</h3>
             {% if show_score %}
@@ -58,13 +37,13 @@
                     <tr>
                         <td>{{ question }}</td> 
                         <td>{{ answer }}</td>
-                        {% if show_score %}
+                        {% comment %} {% if show_score %}
                             {% if question|is_answer_correct:answer %}
                                 <span style="color: green;">✔️</span>
                             {% else %}
                                 <span style="color: red;">❌</span>
                             {% endif %}
-                        {% endif %}
+                        {% endif %} {% endcomment %}
                     </tr>
                 {% endfor %}
                 </tbody>

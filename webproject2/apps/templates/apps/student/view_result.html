@@ -55,20 +55,23 @@
                         <tr>
                             <td>{{ question }}</td> 
                             <td>{{ answer }}</td>
-                            {% if is_past_deadline %}
+                            {% comment %} Check đúng sai {% endcomment %}
+                            {% comment %} {% if is_past_deadline %}
                                 <!-- If you have a filter or function to check the answer's correctness, use it here -->
                                 {% if answer|is_answer_correct:question %}
                                     <span style="color: green;">✔</span>
                                 {% else %}
                                     <span style="color: red;">✘</span>
                                 {% endif %}
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
             </div>
             <div class="col-12 col-md-4">
+                <a href="{% url 'download_submission' submission.id %}" class="btn btn-primary">Tải bài làm</a>
+
                 <a href="{% url 'home-student' %}" class="btn btn-primary mt-5 mx-5 d-flex justify-content-center">Quay lại trang chủ</a>
             </div>
         </div>

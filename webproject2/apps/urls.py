@@ -27,7 +27,8 @@ urlpatterns = [
     # path('view_result/<int:assignment_id>/', views.view_result, name='view_result'),
     path('view_result/<int:assignment_id>/', views.ViewResult.as_view(), name='view_result'),
     path('submitEx5/<int:assignment_id>/', views.submitEx5.as_view(), name='ex5'),
-
+    path('download_submission/<int:submission_id>/', views.download_submission_data, name='download_submission'),
+    path('grade/', views.grade, name='grade'),
 
 
     # path('list-class/teacherid=<int:user_id>', view.)

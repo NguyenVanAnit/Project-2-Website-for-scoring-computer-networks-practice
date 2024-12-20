@@ -10,6 +10,9 @@
         .errorlist {
             color: #ff0000;
         }
+        .cardbtn:hover{
+            background-color: #0b9d99;
+        }
     </style>
 </head>
 <body>
@@ -21,7 +24,7 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="cardbtn">Đăng nhập</button>
+                <button type="submit" class="cardbtn" style="cursor: pointer;">Đăng nhập</button>
             </form>
         </div>
         {% comment %} {% if messages %}

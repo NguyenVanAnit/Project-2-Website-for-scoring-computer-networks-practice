@@ -47,7 +47,16 @@
                 <p>Điểm: {{ submission.score }}</p>
             {% endif %}
         {% endif %}
-        
+
+
+        {% comment %} {% if assignment.role == 0 %}
+            <h4> Bài thực hành số 4</h4>
+            <a href="{% url 'ex4' assignment.id %}" onclick="return confirmStart()" class="btn btn-primary mt-4">Bắt đầu làm bài</a>
+        {% else %}
+            <h4> Bài thực hành số 5</h4>
+            <a href="{% url 'ex5' assignment.id %}" onclick="return confirmStart()" class="btn btn-primary mt-4">Bắt đầu làm bài</a>
+        {% endif %} {% endcomment %}
+
         <a href="{% url 'upload' assignment.id %}" onclick="return confirmStart()" class="btn btn-primary mt-4">Bắt đầu làm bài</a><br>
         {% comment %} <a href="#">Xem kết quả bài thi</a> <!-- Link này sẽ cần xử lý thêm --> {% endcomment %}
     </div>

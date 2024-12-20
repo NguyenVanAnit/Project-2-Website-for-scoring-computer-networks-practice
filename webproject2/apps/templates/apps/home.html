@@ -1,12 +1,80 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    <h1>Welcome to the Home Page</h1>
-    <a href="{% url 'login' %}">Login</a>
-</body>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        flex-direction: column;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .hover-class {
+        background-color: #15bfba;
+        border: 2px solid #15bfba;
+      }
+      .hover-class:hover {
+        background-color: #0b9d99;
+        border: 2px solid #fe2c55;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        width: 70%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        flex-direction: column;
+        height: 90vh;
+      "
+    >
+      <img
+        src="{% static 'images/background.jpg' %}"
+        alt="logo"
+        style="width: 50%"
+      />
+
+      <h1 style="font-size: 40px; text-align: center">
+        Hệ thống chấm điểm <span style="color: #fe2c55">tự động</span> thực hành
+        môn <span style="color: #15bfba">Mạng máy tính</span>
+      </h1>
+      <p
+        style="
+          font-size: 16px;
+          font-weight: 450;
+          text-align: center;
+          width: 80%;
+        "
+      >
+        Nền tảng hỗ trợ sinh viên kiểm tra, nộp bài và nhận đánh giá tự động
+        trong các bài thực hành mạng. Với giao diện trực quan, chấm điểm nhanh
+        chóng và chính xác, hệ thống giúp tối ưu hóa quá trình học tập và giảng
+        dạy, mang đến trải nghiệm học tập hiệu quả và hiện đại.
+      </p>
+      <a
+        href="{% url 'login' %}"
+        class="hover-class"
+        style="
+          height: ;
+          text-decoration: none;
+          padding: 10px 20%;
+          color: white;
+          font-size: 20px;
+          font-weight: 700;
+          border-radius: 10px;
+          cursor: pointer;
+          
+        "
+        >Bắt đầu</a
+      >
+    </div>
+  </body>
 </html>

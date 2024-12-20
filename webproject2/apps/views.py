@@ -33,6 +33,8 @@ import binascii
 import time
 
 import csv
+from django.http import JsonResponse
+
 
 
 # Create your views here.
@@ -159,36 +161,6 @@ def class_detail(request, class_id):
     if request.method == 'POST':
         if 'add_student' in request.POST:
             form = AddStudentForm(request.POST)
-            # if form.is_valid():
-            #     user_id = form.cleaned_data['user_id']
-            #     csv_file = request.FILES.get('csv_file')
-
-            #     if csv_file:
-            #         decoded_file = csv_file.read().decode('utf-8').splitlines()
-            #         reader = csv.reader(decoded_file)
-            #         for row in reader:
-            #             user_id = row[0]
-            #             try:
-            #                 student = User.objects.get(user_id=user_id)
-            #                 if student.role != 0:
-            #                     messages.error(request, 'The user is not a student.')
-            #                 else:
-            #                     class_instance.students.add(student)
-            #                     messages.success(request, f'Sinh viên {student.username} được thêm vào {class_instance.name}.')
-            #             except User.DoesNotExist:
-            #                 messages.error(request, 'Không có ID của sinh viên trên.')
-            #     else:
-            #         try:
-            #             student = User.objects.get(user_id=user_id)
-            #             if student.role != 0:
-            #                 messages.error(request, 'The user is not a student.')
-            #             else:
-            #                 class_instance.students.add(student)
-            #                 messages.success(request, f'Sinh viên {student.username} được thêm vào {class_instance.name}.')
-            #         except User.DoesNotExist:
-            #             messages.error(request, 'Không có ID của sinh viên trên.')
-            # return redirect('class_detail', class_id=class_instance.id)
-            form = AddStudentForm(request.POST)
             if form.is_valid():
                 def add_single_student(user_id):
                     try:
@@ -237,42 +209,6 @@ def class_detail(request, class_id):
         'assignments': assignments
     })
 
-# def class_detail(request, class_id):
-#     class_instance = get_object_or_404(Class, id=class_id, teacher=request.user)
-#     assignments = Assignment.objects.filter(class_id=class_instance)
-#     form = AddStudentForm()  # Form thêm học sinh
-#     form2 = AssignmentForm()  # Form thêm bài tập mới
-
-#     if request.method == 'POST':
-#         if 'add_student' in request.POST:
-#             form = AddStudentForm(request.POST)
-#             if form.is_valid():
-#                 user_id = form.cleaned_data['user_id']
-#                 try:
-#                     student = User.objects.get(user_id=user_id)
-#                     if student.role != 0:
-#                         messages.error(request, 'The user is not a student.')
-#                     else:
-#                         class_instance.students.add(student)
-#                         messages.success(request, f'Student {student.username} added to class {class_instance.name}.')
-#                 except User.DoesNotExist:
-#                     messages.error(request, 'Student with the given User ID does not exist.')
-#         elif 'add_assignment' in request.POST:
-#             form2 = AssignmentForm(request.POST)
-#             if form2.is_valid():
-#                 assignment = form2.save(commit=False)
-#                 assignment.class_id = class_instance
-#                 assignment.save()
-#                 messages.success(request, f'Assignment {assignment.name} added to class {class_instance.name}.')
-
-#     students = class_instance.students.all()
-#     return render(request, 'apps/teacher/class_detail.html', {
-#         'class_instance': class_instance,
-#         'students': students,
-#         'form': form,
-#         'form2': form2,
-#         'assignments': assignments
-#     })
 @decorators.login_required(login_url = '/login/')
 def view_student_submission(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
@@ -315,36 +251,7 @@ def view_student_assignments(request, user_id):
             assignment_results.append({'assignment': assignment, 'submission': None, 'show_score': False})
 
     return render(request, 'apps/student/student_assignments.html', {'student': student, 'assignment_results': assignment_results})
-# def class_detail(request, class_id):
-#     class_instance = get_object_or_404(Class, id=class_id, teacher=request.user)
 
-#     class_obj = get_object_or_404(Class, id=class_id)
-#     assignments = Assignment.objects.filter(class_id=class_obj)
-
-#     if request.method == 'POST':
-#         form = AddStudentForm(request.POST)
-#         form2 = AssignmentForm(request.POST)
-#         if form.is_valid():
-#             user_id = form.cleaned_data['user_id']
-#             assignment = form.save(commit=False)
-#             assignment.class_id = class_obj
-#             assignment.save()
-#             try:
-#                 student = User.objects.get(user_id=user_id)
-#                 if student.role != 0:
-#                     messages.error(request, 'The user is not a student.')
-#                 else:
-#                     class_instance.students.add(student)
-#                     messages.success(request, f'Student {student.username} added to class {class_instance.name}.')
-#             except User.DoesNotExist:
-#                 messages.error(request, 'Student with the given User ID does not exist.')
-#             return redirect('class_detail', class_id=class_instance.id)
-#     else:
-#         form = AddStudentForm()
-#         form2 = AssignmentForm()
-    
-#     students = class_instance.students.all()
-#     return render(request, 'apps/teacher/class_detail.html', {'class_instance': class_instance, 'students': students, 'form': form, 'form2': form2, 'assignments': assignments})
 @decorators.login_required(login_url = '/login/')
 def student_submission_detail(request, student_id):
     student = get_object_or_404(User, id=student_id)
@@ -359,16 +266,6 @@ def student_classes(request):
     classes = request.user.classes_enrolled.all()
     return render(request, 'apps/student/student_classes.html', {'classes': classes})
 
-# def student_class_detail(request, class_id):
-#     student = request.user
-#     class_obj = get_object_or_404(Class, id=class_id, students=student)
-#     assignments = Assignment.objects.filter(class_id=class_obj)
-#     submissions = {}
-#     for assignment in assignments:
-#         submission = assignment.submissions.filter(student=student).first()
-#         if submission:
-#             submissions[assignment.id] = submission
-#     return render(request, 'apps/student/class_detail.html', {'class_obj': class_obj, 'assignments': assignments, 'submissions': submissions})
 @decorators.login_required(login_url = '/login/')
 def student_class_detail(request, class_id):
     student = request.user
@@ -681,19 +578,19 @@ class submitEx4(LoginRequiredMixin, View):
             if int(stt) == j_stt and j_protocol == 'UDP':
                 # c1
                 if souIP == j_src_ip:
-                    souIP += '✔'
+                    # souIP += '✔'
                     score += 0.2
                 if desIP == j_dst_ip:
-                    desIP += '✔'
+                    # desIP += '✔'
                     score += 0.2
                 if int(souPort) == j_src_port:
-                    souPort += '✔'
+                    # souPort += '✔'
                     score += 0.2
                 if int(desPort) == j_dst_port:
-                    desPort += '✔'
+                    # desPort += '✔'
                     score += 0.2
                 if int(floor) == 1:
-                    floor += '✔'
+                    # floor += '✔'
                     score += 0.2
 
                 # c2
@@ -705,79 +602,79 @@ class submitEx4(LoginRequiredMixin, View):
                         dst_packet_c1_stt = dst_packet.get('stt')
                         break
                 if int(stt2) == int(dst_packet_c1_stt):
-                    stt2 += '✔'
+                    # stt2 += '✔'
                     score += 0.25
                 if int(success2) == 0:
-                    success2 += '✔'
+                    # success2 += '✔'
                     score += 0.25
 
             #c3
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
                 start_syn3 = False
                 if souIP3 == j_src_ip:
-                    souIP3 += '✔'
+                    # souIP3 += '✔'
                     score += 0.25
                 if desIP3 == '202.191.56.66':
-                    desIP3 += '✔'
+                    # desIP3 += '✔'
                     score += 0.25
                 if souPort3 == j_src_port:
-                    souPort3 += '✔'
+                    # souPort3 += '✔'
                     score += 0.25
                 if desPort3 == j_dst_port:
-                    desPort3 += '✔'
+                    # desPort3 += '✔'
                     score += 0.25
                 if stt31 == j_stt and nhiphan31 == '000000000010' and flag31 == 'SYN' and seq31 == j_seq and ack31 == 0 and lenghtdata31 == 0:
-                    stt31 += '✔'
+                    # stt31 += '✔'
                     score += 0.5
                 
             if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
                 start_synack3 = False
                 if stt32 == j_stt and nhiphan32 == '000000010010' and 'SYN' in flag32 and 'ACK' in flag32 and seq32 == j_seq and ack32 == 1 and lenghtdata32 == 0:
                     score += 0.5
-                    stt32 += '✔'
+                    # stt32 += '✔'
             
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
                 start_ack3 = False
                 if stt33 == j_stt and nhiphan33 == '000000000010' and flag33 == 'ACK' and seq33 == j_seq and ack32 == 1 and lenghtdata33 == 0:
                     score += 0.5
-                    stt33 += '✔'
+                    # stt33 += '✔'
 
             # c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66':
                 strpayload = "414c49434527532041" # ALICE'S A
                 if strpayload in j_payload:
                     if int(stt4) == j_stt:
-                        stt4 += '✔'
+                        # stt4 += '✔'
                         score += 0.2
                     if souIP4 == j_src_ip:   
-                        souIP4 += '✔' 
+                        # souIP4 += '✔' 
                         score += 0.1
                     if desIP4 == '202.191.56.66':
-                        desIP4 += '✔'
+                        # desIP4 += '✔'
                         score += 0.1
                     if int(souPort4) == j_src_port:
-                        souPort4 += '✔'
+                        # souPort4 += '✔'
                         score += 0.2
                     if int(desPort4) == j_dst_port:
-                        desPort4 += '✔'
+                        # desPort4 += '✔'
                         score += 0.2
                     if int(seq4) == j_seq:
-                        seq4 += '✔'
+                        # seq4 += '✔'
                         score += 0.2
                     if int(ack4) == 1:
-                        ack4 += '✔'
+                        # ack4 += '✔'
                         score += 0.2
                     if int(lenghttcp4) == 20:
-                        lenghttcp4 += '✔'
+                        # lenghttcp4 += '✔'
                         score += 0.2
                     if int(lenghtdata4) == j_lenght_payload:
-                        lenghtdata4 += '✔'
+                        # lenghtdata4 += '✔'
                         score += 0.2
                     if flag4 == 'ACK':
-                        flag4 += '✔'
+                        # flag4 += '✔'
                         score += 0.2
                     if int(floor4) == 2:
-                        floor4 += '✔'
+                        # floor4 += '✔'
                         score += 0.2
                     
                     start_stt4 = j_stt
@@ -789,37 +686,37 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt5 = False
                     if int(stt5) == j_stt:
-                        stt5 += '✔'
+                        # stt5 += '✔'
                         score += 0.2
                     if souIP5 == j_src_ip:    
-                        souIP5 += '✔'
+                        # souIP5 += '✔'
                         score += 0.1
                     if desIP5 == j_dst_ip:
-                        desIP5 += '✔'
+                        # desIP5 += '✔'
                         score += 0.1
                     if int(souPort5) == j_src_port:
-                        souPort5 += '✔'
+                        # souPort5 += '✔'
                         score += 0.2
                     if int(desPort5) == j_dst_port:
-                        desPort5 += '✔'
+                        # desPort5 += '✔'
                         score += 0.2
                     if int(seq5) == j_seq:
-                        seq5 += '✔'
+                        # seq5 += '✔'
                         score += 0.2
                     if int(ack5) == start_ack5:
-                        ack5 += '✔'
+                        # ack5 += '✔'
                         score += 0.2
                     if int(lenghttcp5) == 20:
-                        lenghttcp5 += '✔'
+                        # lenghttcp5 += '✔'
                         score += 0.2
                     if int(lenghtdata5) == 0:
-                        lenghtdata5 += '✔'
+                        # lenghtdata5 += '✔'
                         score += 0.2
                     if flag5 == 'ACK':
-                        flag5 += '✔'
+                        # flag5 += '✔'
                         score += 0.2
                     if int(success5) == 1:
-                        success5 += '✔'
+                        # success5 += '✔'
                         score += 0.2
                     
             # c6
@@ -828,7 +725,7 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt6 = False
                     if int(seq6) == j_seq:
-                        seq6 += '✔'
+                        # seq6 += '✔'
                         score += 1
             
             # c7
@@ -837,27 +734,27 @@ class submitEx4(LoginRequiredMixin, View):
                     print(j_stt)
                     start_stt7 = False
                     if int(stt7) == j_stt:
-                        stt7 += '✔'
+                        # stt7 += '✔'
                         score += 0.2
                     if nhiphan7 == '000000010001':
-                        nhiphan7 += '✔'
+                        # nhiphan7 += '✔'
                         score += 0.2
                     if ('FIN' in flag7) and ('ACK' in flag7):
-                        flag7 += '✔'
+                        # flag7 += '✔'
                         score += 0.2
                     if int(seq7) == j_seq:
-                        seq7 += '✔'
+                        # seq7 += '✔'
                         score += 0.2
                     
                     if int(lenghtdata7) == 0:
-                        lenghtdata7 += '✔'
+                        # lenghtdata7 += '✔'
                         score += 0.2
 
             #8
             if j_bps > max_bps:
                 max_bps = j_bps
             if max_bps == bps8:
-                bp8 += '✔'
+                # bp8 += '✔'
                 score += 0.5
 
         # Lưu submission
@@ -1127,138 +1024,138 @@ class submitEx5(LoginRequiredMixin, View):
             if stt == j_stt and j_dns == '1':
                 start2 = True
                 if protocol == 'UDP':
-                    protocol += '✔'
+                    # protocol += '✔'
                     score += 0.1
                 if souIP == j_src_ip:
-                    souIP += '✔'
+                    # souIP += '✔'
                     score += 0.1
                 if desIP == j_dst_ip:
                     score += 0.1
-                    desIP += '✔'
+                    # desIP += '✔'
                 if souPort == j_src_port:
                     score += 0.1
-                    souPort += '✔'
+                    # souPort += '✔'
                 if desPort == j_dst_port:
                     score += 0.1
-                    desPort += '✔'
+                    # desPort += '✔'
                 if port1 == 'DNS':
-                    port1 += '✔'
+                    # port1 += '✔'
                     score += 0.1
                 if type1 == 'A':
                     score += 0.1
-                    type1 += '✔'
+                    # type1 += '✔'
 
             #c2
             if j_src_ip == '1.1.1.1' and start2 and j_dns == '1':
                 start2 = False
                 if stt2 == j_stt:
-                    stt2 += '✔'
+                    # stt2 += '✔'
                     score += 0.1
                 if protocol2 == 'UDP':
-                    protocol2 += '✔'
+                    # protocol2 += '✔'
                     score += 0.1
                 if souIP2 == j_src_ip:
-                    souIP2 += '✔'
+                    # souIP2 += '✔'
                     score += 0.1
                 if desIP2 == j_dst_ip:
-                    desIP2 += '✔'
+                    # desIP2 += '✔'
                     score += 0.1
                 if souPort2 == j_src_port:
-                    souPort2 += '✔'
+                    # souPort2 += '✔'
                     score += 0.1
                 if desPort2 == j_dst_port:
-                    desPort2 += '✔'
+                    # desPort2 += '✔'
                     score += 0.1
                 if type2 == 'A':
-                    type2 += '✔'
+                    # type2 += '✔'
                     score += 0.1
                 if mien2 == 'nct.soict.hust.edu.vn':
-                    mien2 += '✔'
+                    # mien2 += '✔'
                     score += 0.1
                 if mienIP2 == '202.191.56.66':
-                    mienIP2 += '✔'
+                    # mienIP2 += '✔'
                     score += 0.1
 
             #c3
             if 'lingosolution.co.uk' in mien3:
-                mien3 += '✔'
+                # mien3 += '✔'
                 score += 0.3
             if mienIP3 == '149.255.58.41':
-                mienIP3 += '✔'
+                # mienIP3 += '✔'
                 score += 0.4
 
             #c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
                 start_syn3 = False
                 if stt41 == j_stt:
-                    stt41 += '✔'
+                    # stt41 += '✔'
                     score += 0.2
                 if port41a == j_src_ip:
-                    port41a += '✔'
+                    # port41a += '✔'
                     score += 0.2
                 if port41b == j_dst_ip:
                     score += 0.2
-                    port41b += '✔'
+                    # port41b += '✔'
             
             if port42 == 'HTTP':
-                port42 += '✔'
+                # port42 += '✔'
                 score += 0.2
 
             if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
                 start_synack3 = False
                 if stt42 == j_stt:
-                    stt42 += '✔'
+                    # stt42 += '✔'
                     score += 0.2
             
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
                 start_ack3 = False
                 if stt43 == j_stt:
-                    stt43 += '✔'
+                    # stt43 += '✔'
                     score += 0.2
             
             #c5
 
             #c6
             if protocol6 == 'TCP':
-                protocol6 += '✔'
+                # protocol6 += '✔'
                 score += 0.2
             if port6 == 80:
-                port6 += '✔'
+                # port6 += '✔'
                 score += 0.2
             if 'HTTP' in phienban6 and '1.1' in phienban6:
                 score += 0.2
-                phienban6 += '✔'
+                # phienban6 += '✔'
             if 'keep-alive' in truong6:
                 score += 0.2
-                truong6 += '✔'
+                # truong6 += '✔'
 
             #c7
             if 'HTTP' in phienban7 and '1.1' in phienban7:
                 score += 0.2
-                phienban7 += '✔'
+                # phienban7 += '✔'
             if 'keep-alive' in truong7:
                 score += 0.2
-                truong7 += '✔'
+                # truong7 += '✔'
             if 'text/html' in data7:
                 score += 0.2
-                data7 += '✔'
+                # data7 += '✔'
             if length7 == j_lenght_payload:
                 score += 0.2
-                length7 += '✔'
+                # length7 += '✔'
             if goi7 == 16:
                 score += 0.2
-                goi7 += '✔'
+                # goi7 += '✔'
 
             #c8
             if 'lingosolution.co.uk' in mien8:
                 score += 0.2
-                mien8 += '✔'
+                # mien8 += '✔'
             if mienIP8 == '149.255.58.41':
                 score += 0.2
-                mienIP8 += '✔'
+                # mienIP8 += '✔'
             if truong8 == 'http://nct.soict.hust.edu.vn/':
                 score += 0.2
-                truong8 += '✔'
+                # truong8 += '✔'
 
         if stt == -1:
             stt = ''
@@ -1578,6 +1475,86 @@ def upload_pcap(request, assignment_id):
         return render(request, 'apps/student/upload_pcap.html', {'form': form, 'assignment': assignment})
     
         
+def download_submission_data(request, submission_id):
+    # Lấy thông tin bài nộp
+    submission = get_object_or_404(Submission, id=submission_id, student=request.user)
+
+    # Đường dẫn file JSON đã được chuyển đổi từ file PCAP
+    json_file_path = os.path.join(settings.BASE_DIR, 'data', 'pcap_data.json')
+
+    # Kiểm tra nếu file JSON tồn tại
+    if not os.path.exists(json_file_path):
+        return HttpResponse("JSON file not found", status=404)
+
+    # Đọc nội dung file JSON
+    with open(json_file_path, 'r') as json_file:
+        pcap_data = json.load(json_file)
+
+    # Lấy thông tin form làm bài của sinh viên
+    form_data = {
+        "submission_time": submission.submission_time.strftime('%Y-%m-%d %H:%M:%S'),
+        "username": submission.student.username,
+        "mssv": submission.student.user_id,
+        "is_submitted": submission.is_submitted,
+        "score": submission.score,
+        "student_input": submission.student_input,
+        "answers": submission.answers,
+        "allow_view_score": submission.allow_view_score,
+        "role": submission.assignment.role
+    }
+
+    # Kết hợp dữ liệu JSON từ PCAP và form làm bài
+    combined_data = {
+        "pcap_data": pcap_data,
+        "form_data": form_data,
+    }
+
+    # Tạo phản hồi tải xuống
+    response = HttpResponse(json.dumps(combined_data, indent=4), content_type="application/json")
+    response['Content-Disposition'] = f'attachment; filename="submission_{submission.id}.json"'
+
+    return response
+
+def grade(request):
+    score = None
+    exercise_type = None
+    username = ''
+    mssv = ''
+    
+    # Kiểm tra nếu người dùng đã tải lên file
+    if request.method == 'POST' and request.FILES.get('json_file'):
+        # Lấy file JSON từ request
+        json_file = request.FILES['json_file']
+        
+        # Đọc nội dung file JSON
+        try:
+            data = json.load(json_file)
+            username = data.get('form_data', {}).get('username', '')
+            mssv = data.get('form_data', {}).get('mssv', '')
+            exercise_type = data.get('form_data', {}).get('role', 0)
+            # Xử lý dữ liệu từ file JSON và tính toán điểm
+            # Giả sử dữ liệu JSON có dạng { "score": 85, "exercise_type": "quiz" }
+            score = data.get('score', 2)
+
+        except json.JSONDecodeError:
+            # Nếu có lỗi trong việc đọc file JSON
+            return render(request, 'gradle.html', {'error': 'File JSON không hợp lệ'})
+
+    if(exercise_type == 1):
+        exercise_type = 'Bài tập thực hành 5'
+    elif(exercise_type == 0):
+        exercise_type = 'Bài tập thực hành 4'
+    else:
+        exercise_type = ''
+
+    context = {
+        'username': username,
+        "mssv": mssv,
+        'score': score,
+        'exercise_type': exercise_type,
+    }
+    
+    return render(request, 'apps/teacher/grade.html', context)
 
 # @csrf_exempt
 # def upload_pcap(request):
