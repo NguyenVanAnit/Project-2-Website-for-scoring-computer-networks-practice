@@ -18,6 +18,7 @@ class Assignment(models.Model):
     name = models.CharField(max_length=255)
     creation_date = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField()
+    title = models.CharField(max_length=200)
     ROLE_CHOICES_A = (
         (0, 'Bài thực hành 4'),
         (1, 'Bài thực hành 5'),
@@ -32,7 +33,7 @@ class Submission(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submissions')
     submission_time = models.DateTimeField(auto_now_add=True)
     is_submitted = models.BooleanField(default=False)
-    score = models.IntegerField(default=0)
+    score = models.FloatField(default=0)
     student_input = models.TextField(blank=True, null=True)
     answers = models.JSONField(default=dict)
     allow_view_score = models.BooleanField(default=False)

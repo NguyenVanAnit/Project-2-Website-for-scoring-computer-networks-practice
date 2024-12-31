@@ -2,6 +2,8 @@ from django import forms
 from .models import Class, Assignment
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
+from .utils import text_to_hex
+
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
@@ -21,9 +23,14 @@ class CreateClassForm(forms.ModelForm):
         fields = ['code', 'name']
 
 class AssignmentForm(forms.ModelForm):
+    title = forms.CharField(max_length=200, required=True)
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        return text_to_hex(title)
     class Meta:
         model = Assignment
-        fields = ['name', 'deadline', 'role']
+        fields = ['name', 'deadline', 'role', 'title']
         widgets = {
             'deadline': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }

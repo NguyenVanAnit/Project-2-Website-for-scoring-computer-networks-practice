@@ -371,6 +371,7 @@ class submitEx4(LoginRequiredMixin, View):
         # submission = Submission.objects.filter(assignment_id=assignment, student=student).first()
         # if submission and submission.is_submited:
         #     return HttpResponse("You have already submitted this assignment.")
+        print(assignment.title)
 
         # c1
         stt = request.POST.get('stt') 
@@ -380,12 +381,12 @@ class submitEx4(LoginRequiredMixin, View):
         desPort = request.POST.get('desPort')
         floor = request.POST.get('floor')
 
-        print('stt', stt)
-        print('souIP', souIP)
-        print('desIP', desIP)
-        print('souPort', souPort)
-        print('desPort', desPort)
-        print('floor', floor)
+        # print('stt', stt)
+        # print('souIP', souIP)
+        # print('desIP', desIP)
+        # print('souPort', souPort)
+        # print('desPort', desPort)
+        # print('floor', floor)
 
         if stt == '':
             stt = -1
@@ -583,13 +584,13 @@ class submitEx4(LoginRequiredMixin, View):
             
             # c1, c2  
             if int(stt) == j_stt and j_protocol == 'UDP':
-                print('j_stt', j_stt)
-                print('j_src_ip', j_src_ip)
-                print('j_dst_ip', j_dst_ip)
-                print('j_src_port', j_src_port)
-                print('j_dst_port', j_dst_port)
-                print('j_protocol', j_protocol)
-                print('j_floor', floor)
+                # print('j_stt', j_stt)
+                # print('j_src_ip', j_src_ip)
+                # print('j_dst_ip', j_dst_ip)
+                # print('j_src_port', j_src_port)
+                # print('j_dst_port', j_dst_port)
+                # print('j_protocol', j_protocol)
+                # print('j_floor', floor)
                 # c1
                 if souIP == j_src_ip:
                     # souIP += '✔'
@@ -655,17 +656,25 @@ class submitEx4(LoginRequiredMixin, View):
 
             # c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66':
-                strpayload = "414c49434527532041" # ALICE'S A
-                if strpayload in j_payload:
+                # strpayload = str(assignment.title) # ALICE'S A
+                # strpayload = '414C49434527532041'
+                strpayload = assignment.title
+                if strpayload.upper() in j_payload.upper():
+                    print('j_stt alice', j_stt)
+                    print('stt4', stt4)
+                    print("souIP", souIP4, j_src_ip)
+                    print("desIP", desIP4)
                     if int(stt4) == j_stt:
                         # stt4 += '✔'
                         score += 0.2
                     if souIP4 == j_src_ip:   
                         # souIP4 += '✔' 
                         score += 0.1
+                        print("score souip")
                     if desIP4 == '202.191.56.66':
                         # desIP4 += '✔'
                         score += 0.1
+                        print("score", score)
                     if int(souPort4) == j_src_port:
                         # souPort4 += '✔'
                         score += 0.2
@@ -697,7 +706,7 @@ class submitEx4(LoginRequiredMixin, View):
             # c5
             if j_stt > start_stt4 and start_stt5:
                 if j_src_ip == '202.191.56.66' and j_protocol == 'TCP':
-                    print(j_stt)
+                    
                     start_stt5 = False
                     if int(stt5) == j_stt:
                         # stt5 += '✔'
@@ -846,6 +855,23 @@ class submitEx4(LoginRequiredMixin, View):
         
         if floor4 == -1:
             floor4 = ''
+
+
+        if stt5 == -1:
+            stt5 = ''
+        if souPort5 == -1:
+            souPort5 = ''
+        if desPort5 == -1:
+            desPort5 = ''
+        if seq5 == -1:
+            seq5 = ''
+        if ack5 == -1:
+            ack5 = ''
+        if lenghttcp5 == -1:
+            lenghttcp5 = ''
+        if lenghtdata5 == -1:
+            lenghtdata5 = ''
+
         if success5 == -1:
             success5 = ''
         if seq6 == -1:
@@ -906,16 +932,16 @@ class submitEx4(LoginRequiredMixin, View):
             '4.Kích thước phần dữ liệu': lenghtdata4,
             '4.Các cờ thiết lập': flag4,
             '4.Tầng mạng': floor4,
-            '5.Số thứ tự gói tin': stt4,
-            '5.Địa chỉ IP nguồn': souIP4,
-            '5.Địa chỉ IP đích': desIP4,
-            '5.Cổng nguồn': souPort4,
-            '5.Cổng đích': desPort4,
-            '5.Sequence number': seq4,
-            '5.Ack number': ack4,
-            '5.Kích thước phần tiêu đề': lenghttcp4,
-            '5.Kích thước phần dữ liệu': lenghtdata4,
-            '5 .Các cờ thiết lập': flag4,
+            '5.Số thứ tự gói tin': stt5,
+            '5.Địa chỉ IP nguồn': souIP5,
+            '5.Địa chỉ IP đích': desIP5,
+            '5.Cổng nguồn': souPort5,
+            '5.Cổng đích': desPort5,
+            '5.Sequence number': seq5,
+            '5.Ack number': ack5,
+            '5.Kích thước phần tiêu đề': lenghttcp5,
+            '5.Kích thước phần dữ liệu': lenghtdata5,
+            '5 .Các cờ thiết lập': flag5,
             '5.Kết luận': success5,
             '5.Lý do': request.POST.get('reason5'),
             '6.Sequence number': seq6,
@@ -1241,7 +1267,7 @@ class submitEx5(LoginRequiredMixin, View):
             '8.Referer': truong8,
             '9.Điền đoạn văn': request.POST.get('thieu9')
         }
-
+        
         # return redirect('view_result', assignment_id=assignment.id)
         submission, created = Submission.objects.get_or_create(
             assignment=assignment, student=student,
@@ -1514,7 +1540,8 @@ def download_submission_data(request, submission_id):
         "student_input": submission.student_input,
         "answers": submission.answers,
         "allow_view_score": submission.allow_view_score,
-        "role": submission.assignment.role
+        "role": submission.assignment.role,
+        "assignment_title": submission.assignment.title
     }
 
     # Kết hợp dữ liệu JSON từ PCAP và form làm bài
@@ -1547,7 +1574,8 @@ def grade(request):
             mssv = data.get('form_data', {}).get('mssv', '')
             exercise_type = data.get('form_data', {}).get('role', 0)
             answers = data.get('form_data', {}).get('answers', {})
-            
+            assignment_title = data.get('form_data', {}).get('assignment_title', '101010')
+            assignment_title = str(assignment_title)
             # Xử lý dữ liệu từ file JSON và tính toán điểm
             packets = data.get('pcap_data', {})
 
@@ -1948,13 +1976,13 @@ def grade(request):
             
             # c1, c2  
             if int(stt) == j_stt and j_protocol == 'UDP':
-                print('j_stt', j_stt)
-                print('j_src_ip', j_src_ip)
-                print('j_dst_ip', j_dst_ip)
-                print('j_src_port', j_src_port)
-                print('j_dst_port', j_dst_port)
-                print('j_protocol', j_protocol)
-                print('j_floor', floor)
+                # print('j_stt', j_stt)
+                # print('j_src_ip', j_src_ip)
+                # print('j_dst_ip', j_dst_ip)
+                # print('j_src_port', j_src_port)
+                # print('j_dst_port', j_dst_port)
+                # print('j_protocol', j_protocol)
+                # print('j_floor', floor)
                 # c1
                 if souIP == j_src_ip:
                     # souIP += '✔'
@@ -2020,8 +2048,10 @@ def grade(request):
 
             # c4
             if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66':
-                strpayload = "414c49434527532041" # ALICE'S A
-                if strpayload in j_payload:
+                # strpayload = "414c49434527532041" # ALICE'S A
+                strpayload = assignment_title
+                if strpayload.upper() in j_payload.upper():
+                    print('aloalaoaoao  ', stt4, ' ', j_stt)
                     if int(stt4) == j_stt:
                         # stt4 += '✔'
                         score += 0.2
