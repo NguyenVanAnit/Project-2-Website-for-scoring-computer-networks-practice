@@ -64,39 +64,49 @@
               <p class="fs-4 text-primary">
                 Tên bài thực hành: {{ assignment.name }}
               </p>
-              <p class="fs-6 text-warning fw-bold">
-                Deadline: {{ assignment.deadline }}
-              </p>
-              <a
-                href="{% url 'view_assignment_submissions' assignment.id %}"
-                class="btn-secondary btn"
-                >Xem tổng quan tất cả</a
-              >
+              <div style="display: flex; justify-content: space-between; align-items: center; ">
+                <p class="fs-6 text-warning fw-bold">
+                  Deadline: {{ assignment.deadline }}
+                </p>
+                <button 
+                  class="btn btn-info toggle-details" 
+                  onclick="toggleDetails('details-id', this)">
+                  Xem chi tiết
+                </button>
+              </div>
 
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Sinh viên</th>
-                    <th class="mr-2">MSSV</th>
-                    <th>Bài nộp</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for submission in assignment.submissions.all %}
-                  <tr>
-                    <td>{{ submission.student.username }}</td>
-                    <td>{{ submission.student.user_id }}</td>
-                    <td>
-                      <a
-                        href="{% url 'view_student_submission' submission.id %}"
-                        class="btn btn-success"
-                        >Xem bài nộp</a
-                      >
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+              <div id="details-id" style=" margin-top: 1rem;">
+                <a
+                  href="{% url 'view_assignment_submissions' assignment.id %}"
+                  class="btn-secondary btn"
+                  >Xem tổng quan tất cả</a
+                >
+  
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Sinh viên</th>
+                      <th class="mr-2">MSSV</th>
+                      <th>Bài nộp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for submission in assignment.submissions.all %}
+                    <tr>
+                      <td>{{ submission.student.username }}</td>
+                      <td>{{ submission.student.user_id }}</td>
+                      <td>
+                        <a
+                          href="{% url 'view_student_submission' submission.id %}"
+                          class="btn btn-success"
+                          >Xem bài nộp</a
+                        >
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </li>
             {% endfor %}
           </ul>
@@ -114,14 +124,15 @@
           </button>
 
           <div id="addStudent" style="display: none">
+            <button id="toggleButton123" class="btn btn-warning mb-2">Chuyển đổi: Thêm sinh viên bằng file CSV</button>
             <form method="POST" enctype="multipart/form-data">
               {% csrf_token %}
-              <div class="form-group">
+              <div class="form-group" id="themsv1">
                 <label for="user_id">ID Sinh viên:</label>
                 {{ form.user_id }}
               </div>
 
-              <div class="form-group">
+              <div class="form-group" id="themsv2" style="display: none;">
                 <label for="csv_file">Hoặc tải lên file CSV:</label>
                 <input
                   type="file"
@@ -137,7 +148,7 @@
               <button
                 type="submit"
                 name="add_student"
-                class="btn btn-success mb-4"
+                class="btn btn-success mb-4 mt-4"
               >
                 Thêm sinh viên
               </button>
@@ -154,7 +165,7 @@
                 <tr>
                   <th>Tên sinh viên</th>
                   <th>MSSV</th>
-                  <th>Khác</th>
+                  <th>Hành động</th>
                 </tr>
               </thead>
               <tbody>
@@ -208,6 +219,32 @@
           element.style.display = "none";
         }
       }
+
+      function toggleDetails(id, button) {
+        const detailsTable = document.getElementById(id); // Lấy phần tử theo id
+        if (detailsTable.style.display === "none") {
+          detailsTable.style.display = "block"; // Hiện bảng
+          button.textContent = "Ẩn chi tiết"; // Thay đổi nội dung nút
+        } else {
+          detailsTable.style.display = "none"; // Ẩn bảng
+          button.textContent = "Xem chi tiết"; // Khôi phục nội dung nút
+        }
+      }
+
+      document.getElementById("toggleButton123").addEventListener("click", function () {
+        const div1 = document.getElementById("themsv1");
+        const div2 = document.getElementById("themsv2");
+      
+        if (div1.style.display === "none") {
+          div1.style.display = "block";
+          div2.style.display = "none";
+          document.getElementById("toggleButton123").textContent = "Chuyển đổi: Thêm sinh viên bằng file CSV";
+        } else {
+          div1.style.display = "none";
+          div2.style.display = "block";
+          document.getElementById("toggleButton123").textContent = "Chuyển đổi: Thêm sinh viên bằng ID";
+        }
+      });
     </script>
   </body>
 </html>

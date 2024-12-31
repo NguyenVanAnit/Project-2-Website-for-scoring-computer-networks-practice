@@ -380,6 +380,13 @@ class submitEx4(LoginRequiredMixin, View):
         desPort = request.POST.get('desPort')
         floor = request.POST.get('floor')
 
+        print('stt', stt)
+        print('souIP', souIP)
+        print('desIP', desIP)
+        print('souPort', souPort)
+        print('desPort', desPort)
+        print('floor', floor)
+
         if stt == '':
             stt = -1
         if souPort == '':
@@ -576,22 +583,29 @@ class submitEx4(LoginRequiredMixin, View):
             
             # c1, c2  
             if int(stt) == j_stt and j_protocol == 'UDP':
+                print('j_stt', j_stt)
+                print('j_src_ip', j_src_ip)
+                print('j_dst_ip', j_dst_ip)
+                print('j_src_port', j_src_port)
+                print('j_dst_port', j_dst_port)
+                print('j_protocol', j_protocol)
+                print('j_floor', floor)
                 # c1
                 if souIP == j_src_ip:
                     # souIP += '✔'
-                    score += 0.2
+                    score += 0.4
                 if desIP == j_dst_ip:
                     # desIP += '✔'
-                    score += 0.2
+                    score += 0.4
                 if int(souPort) == j_src_port:
                     # souPort += '✔'
-                    score += 0.2
+                    score += 0.4
                 if int(desPort) == j_dst_port:
                     # desPort += '✔'
-                    score += 0.2
-                if int(floor) == 1:
+                    score += 0.4
+                if floor == "UDP":
                     # floor += '✔'
-                    score += 0.2
+                    score += 0.4
 
                 # c2
                 dst_packet_c1_stt = 0
@@ -1532,7 +1546,11 @@ def grade(request):
             username = data.get('form_data', {}).get('username', '')
             mssv = data.get('form_data', {}).get('mssv', '')
             exercise_type = data.get('form_data', {}).get('role', 0)
+            answers = data.get('form_data', {}).get('answers', {})
+            
             # Xử lý dữ liệu từ file JSON và tính toán điểm
+            packets = data.get('pcap_data', {})
+
             # Giả sử dữ liệu JSON có dạng { "score": 85, "exercise_type": "quiz" }
             score = data.get('score', 2)
 
@@ -1542,8 +1560,581 @@ def grade(request):
 
     if(exercise_type == 1):
         exercise_type = 'Bài tập thực hành 5'
+
+        #c1
+        stt = int(answers.get('1.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin') or -1)
+        protocol = answers.get('1.Giao th\u1ee9c t\u1ea7ng giao v\u1eadn')
+        souIP = answers.get('1.\u0110\u1ecba ch\u1ec9 IP ngu\u1ed3n')
+        desIP = answers.get('1.\u0110\u1ecba ch\u1ec9 IP \u0111\u00edch')
+        souPort = int(answers.get('1.C\u1ed5ng ngu\u1ed3n') or -1)
+        desPort = int(answers.get('1.C\u1ed5ng \u0111\u00edch') or -1)
+        type1 = answers.get('1.C\u1ed5ng d\u1ecbch v\u1ee5')
+        port1 = answers.get('1.Ki\u1ec3u th\u00f4ng tin truy v\u1ea5n')
+
+        #c2
+        stt2 = int(answers.get('2.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin') or -1)
+        protocol2 = answers.get('2.Giao th\u1ee9c t\u1ea7ng giao v\u1eadn')
+        souIP2 = answers.get('2.\u0110\u1ecba ch\u1ec9 IP ngu\u1ed3n')
+        desIP2 = answers.get('2.\u0110\u1ecba ch\u1ec9 IP \u0111\u00edch')
+        souPort2 = int(answers.get('2.C\u1ed5ng ngu\u1ed3n') or -1)
+        desPort2 = int(answers.get('2.C\u1ed5ng \u0111\u00edch') or -1)
+        type2 = answers.get('2.Ki\u1ec3u th\u00f4ng tin truy v\u1ea5n')
+        mien2 = answers.get('2.T\u00ean mi\u1ec1n \u0111\u01b0\u1ee3c truy v\u1ea5n')
+        mienIP2 = answers.get('2.\u0110\u1ecba ch\u1ec9 IP c\u1ee7a t\u00ean mi\u1ec1n \u0111\u01b0\u1ee3c truy v\u1ea5n')
+
+        #c3
+        mien3 = answers.get('3.T\u00ean mi\u1ec1n kh\u00e1c \u0111\u01b0\u1ee3c truy v\u1ea5n')
+        mienIP3 = answers.get('3.\u0110\u1ecba ch\u1ec9 IP c\u1ee7a t\u00ean mi\u1ec1n \u0111\u00f3 l\u00e0')
+
+        #c4
+        stt41 = answers.get('4.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i 1(No)')
+        stt42 = answers.get('4.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i 2(No)')
+        stt43 = answers.get('4.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i 3(No)')
+        port41a = int(answers.get('4.Web Browser') or -1)
+        port41b = int(answers.get('4.Web Server') or -1)
+        port42 = answers.get('4.C\u1ed5ng \u1ee9ng d\u1ee5ng c\u1ee7a d\u1ecbch v\u1ee5 n\u00e0o?')
+
+        #c5
+        thongdiep5 = answers.get('5.Nh\u1eefng th\u00f4ng \u0111i\u1ec7p n\u00e0o \u0111\u01b0\u1ee3c g\u1eedi \u0111i li\u00ean ti\u1ebfp m\u00e0 kh\u00f4ng \u0111\u1ee3i th\u00f4ng \u0111i\u1ec7p tr\u1ea3 l\u1eddi?')
+
+        #c6
+        protocol6 = answers.get('6.Giao th\u1ee9c t\u1ea7ng giao v\u1eadn')
+        port6 = int(answers.get('6.S\u1ed1 hi\u1ec7u c\u1ed5ng \u1ee9ng d\u1ee5ng \u0111\u00edch') or -1)
+        phienban6 = answers.get('6.Phi\u00ean b\u1ea3n c\u1ee7a giao th\u1ee9c HTTP')
+        truong6 = answers.get('6.Connection')
+
+        #c7
+        phienban7 = answers.get('7.Phi\u00ean b\u1ea3n c\u1ee7a giao th\u1ee9c HTTP')
+        truong7 = answers.get('7.Connection')                    
+        data7 = answers.get('7.Ph\u1ea7n th\u00e2n ch\u1ee9a d\u1eef li\u1ec7u')
+        length7 = int(answers.get('7.D\u1eef li\u1ec7u n\u00e0y c\u00f3 k\u00edch th\u01b0\u1edbc') or -1)
+        goi7 = int(answers.get('7.Bao nhi\u00eau g\u00f3i tin TCP') or -1)
+
+        #c8
+        mien8 = answers.get('8.T\u00ean mi\u1ec1n')
+        mienIP8 = answers.get('8.\u0110\u1ecba ch\u1ec9 IP')
+        truong8 = answers.get('"8.Referer')
+
+        score = 0
+        start2 = False
+        start_syn3 = True
+        start_synack3 = True
+        start_ack3 = True
+
+        for packet in packets:
+            j_stt = packet.get('stt')
+            j_src_ip = packet.get('src_ip')
+            j_dst_ip = packet.get('dst_ip')
+            j_src_port = packet.get('src_port')
+            j_dst_port = packet.get('dst_port')
+            j_protocol = packet.get('protocol')
+            j_payload = packet.get('payload')
+            j_payload = str(j_payload)
+            j_seq = packet.get('seq')
+            j_ack = packet.get('ack')
+            j_lenght_payload = packet.get('lenght_payload')
+            j_fin = packet.get('fin')
+            j_bps = packet.get('bps')
+            j_syn = packet.get('syn')
+            j_dns = packet.get('dns')
+
+            #c1
+            if stt == j_stt and j_dns == '1':
+                start2 = True
+                if protocol == 'UDP':
+                    # protocol += '✔'
+                    score += 0.1
+                if souIP == j_src_ip:
+                    # souIP += '✔'
+                    score += 0.1
+                if desIP == j_dst_ip:
+                    score += 0.1
+                    # desIP += '✔'
+                if souPort == j_src_port:
+                    score += 0.1
+                    # souPort += '✔'
+                if desPort == j_dst_port:
+                    score += 0.1
+                    # desPort += '✔'
+                if port1 == 'DNS':
+                    # port1 += '✔'
+                    score += 0.1
+                if type1 == 'A':
+                    score += 0.1
+                    # type1 += '✔'
+
+            #c2
+            if j_src_ip == '1.1.1.1' and start2 and j_dns == '1':
+                start2 = False
+                if stt2 == j_stt:
+                    # stt2 += '✔'
+                    score += 0.1
+                if protocol2 == 'UDP':
+                    # protocol2 += '✔'
+                    score += 0.1
+                if souIP2 == j_src_ip:
+                    # souIP2 += '✔'
+                    score += 0.1
+                if desIP2 == j_dst_ip:
+                    # desIP2 += '✔'
+                    score += 0.1
+                if souPort2 == j_src_port:
+                    # souPort2 += '✔'
+                    score += 0.1
+                if desPort2 == j_dst_port:
+                    # desPort2 += '✔'
+                    score += 0.1
+                if type2 == 'A':
+                    # type2 += '✔'
+                    score += 0.1
+                if mien2 == 'nct.soict.hust.edu.vn':
+                    # mien2 += '✔'
+                    score += 0.1
+                if mienIP2 == '202.191.56.66':
+                    # mienIP2 += '✔'
+                    score += 0.1
+
+            #c3
+            if 'lingosolution.co.uk' in mien3:
+                # mien3 += '✔'
+                score += 0.3
+            if mienIP3 == '149.255.58.41':
+                # mienIP3 += '✔'
+                score += 0.4
+
+            #c4
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
+                start_syn3 = False
+                if stt41 == j_stt:
+                    # stt41 += '✔'
+                    score += 0.2
+                if port41a == j_src_ip:
+                    # port41a += '✔'
+                    score += 0.2
+                if port41b == j_dst_ip:
+                    score += 0.2
+                    # port41b += '✔'
+            
+            if port42 == 'HTTP':
+                # port42 += '✔'
+                score += 0.2
+
+            if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
+                start_synack3 = False
+                if stt42 == j_stt:
+                    # stt42 += '✔'
+                    score += 0.2
+            
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
+                start_ack3 = False
+                if stt43 == j_stt:
+                    # stt43 += '✔'
+                    score += 0.2
+            
+            #c5
+
+            #c6
+            if protocol6 == 'TCP':
+                # protocol6 += '✔'
+                score += 0.2
+            if port6 == 80:
+                # port6 += '✔'
+                score += 0.2
+            if 'HTTP' in phienban6 and '1.1' in phienban6:
+                score += 0.2
+                # phienban6 += '✔'
+            if 'keep-alive' in truong6:
+                score += 0.2
+                # truong6 += '✔'
+
+            #c7
+            if 'HTTP' in phienban7 and '1.1' in phienban7:
+                score += 0.2
+                # phienban7 += '✔'
+            if 'keep-alive' in truong7:
+                score += 0.2
+                # truong7 += '✔'
+            if 'text/html' in data7:
+                score += 0.2
+                # data7 += '✔'
+            if length7 == j_lenght_payload:
+                score += 0.2
+                # length7 += '✔'
+            if goi7 == 16:
+                score += 0.2
+                # goi7 += '✔'
+
+            #c8
+            if 'lingosolution.co.uk' in mien8:
+                score += 0.2
+                # mien8 += '✔'
+            if mienIP8 == '149.255.58.41':
+                score += 0.2
+                # mienIP8 += '✔'
+            if truong8 == 'http://nct.soict.hust.edu.vn/':
+                score += 0.2
+                # truong8 += '✔'
+
     elif(exercise_type == 0):
         exercise_type = 'Bài tập thực hành 4'
+
+        # c1
+        stt = answers.get('1.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin') 
+        souIP = answers.get('1.\u0110\u1ecba ch\u1ec9 IP ngu\u1ed3n')
+        desIP = answers.get('1.\u0110\u1ecba ch\u1ec9 IP \u0111\u00edch')
+        souPort = answers.get('1.C\u1ed5ng ngu\u1ed3n')
+        desPort = answers.get('1.C\u1ed5ng \u0111\u00edch')
+        floor = answers.get('1.T\u1ea7ng')
+
+        if stt == '':
+            stt = -1
+        if souPort == '':
+            souPort = -1
+        if desPort == '':
+            desPort = -1
+        if floor is None:
+            floor = -1
+
+        # c2
+        stt2 = answers.get('2.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin')
+        reason2 = answers.get('2.L\u00fd do')
+        success2 = int(answers.get('2.Th\u00e0nh c\u00f4ng hay kh\u00f4ng?') or -1)
+        reason22 = answers.get('2.L\u00fd do 2')
+
+        if stt2 == '':
+            stt2 = -1
+        if success2 is None:
+            success2 = -1
+
+        #c3
+        souIP3 = answers.get('3.\u0110\u1ecba ch\u1ec9 IP ngu\u1ed3n')
+        desIP3 = answers.get('3.\u0110\u1ecba ch\u1ec9 IP \u0111\u00edch')
+        souPort3 = answers.get('3.C\u1ed5ng ngu\u1ed3n')
+        desPort3 = answers.get('3.C\u1ed5ng \u0111\u00edch')
+        
+        stt31 = int(answers.get('3.1.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin') or -1)
+        nhiphan31 = answers.get('3.1.Gi\u00e1 tr\u1ecb nh\u1ecb ph\u00e2n tr\u01b0\u1eddng Flag')
+        flag31 = answers.get('3.1.C\u00e1c c\u1edd thi\u1ebft l\u1eadp')
+        seq31 = int(answers.get('3.1.Sequence number') or -1)
+        ack31 = int(answers.get('3.1.Ack number') or -1)
+        lenghtdata31 = int(answers.get('3.1.K\u00edch th\u01b0\u1edbc ph\u1ea7n d\u1eef li\u1ec7u') or -1)
+
+        stt32 = int(answers.get('3.2.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin') or -1)
+        nhiphan32 = answers.get('3.2.Gi\u00e1 tr\u1ecb nh\u1ecb ph\u00e2n tr\u01b0\u1eddng Flag')
+        flag32 = answers.get('3.2.C\u00e1c c\u1edd thi\u1ebft l\u1eadp')
+        seq32 = int(answers.get('3.2.Sequence number') or -1)
+        ack32 = int(answers.get('3.2.Ack number') or -1)
+        lenghtdata32 = int(answers.get('3.2.K\u00edch th\u01b0\u1edbc ph\u1ea7n d\u1eef li\u1ec7u') or -1)
+
+        stt33 = int(answers.get('3.3.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin') or -1)
+        nhiphan33 = answers.get('3.3.Gi\u00e1 tr\u1ecb nh\u1ecb ph\u00e2n tr\u01b0\u1eddng Flag')
+        flag33 = answers.get('3.3.C\u00e1c c\u1edd thi\u1ebft l\u1eadp')
+        seq33 = int(answers.get('3.3.Sequence number') or -1)
+        ack33 = int(answers.get('3.3.Ack number') or -1)
+        lenghtdata33 = int(answers.get('3.3.K\u00edch th\u01b0\u1edbc ph\u1ea7n d\u1eef li\u1ec7u') or -1)
+
+        # c4
+        stt4 = answers.get('4.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin')
+        souIP4 = answers.get('4.\u0110\u1ecba ch\u1ec9 IP ngu\u1ed3n')
+        desIP4 = answers.get('4.\u0110\u1ecba ch\u1ec9 IP \u0111\u00edch')
+        souPort4 = answers.get('4.C\u1ed5ng ngu\u1ed3n')
+        desPort4 = answers.get('4.C\u1ed5ng \u0111\u00edch')
+        seq4 = answers.get('4.Sequence number')
+        ack4 = answers.get('4.Ack number')
+        lenghttcp4 = answers.get('4.K\u00edch th\u01b0\u1edbc ph\u1ea7n ti\u00eau \u0111\u1ec1')
+        lenghtdata4 = answers.get('4.K\u00edch th\u01b0\u1edbc ph\u1ea7n d\u1eef li\u1ec7u')
+        flag4 = answers.get('4.C\u00e1c c\u1edd thi\u1ebft l\u1eadp')
+        floor4 = int(answers.get('4.T\u1ea7ng m\u1ea1ng') or -1)
+
+        if stt4 == '':
+            stt4 = -1
+        if souPort4 == '':
+            souPort4 = -1
+        if desPort4 == '':
+            desPort4 = -1
+        if seq4 == '':
+            seq4 = -1
+        if ack4 == '':
+            ack4 = -1
+        if lenghttcp4 == '':
+            lenghttcp4 = -1
+        if lenghtdata4 == '':
+            lenghtdata4 = -1
+        if floor4 is None:
+            floor4 = -1
+
+        # c5
+        stt5 = answers.get('5.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin')
+        souIP5 = answers.get('5.\u0110\u1ecba ch\u1ec9 IP ngu\u1ed3n')
+        desIP5 = answers.get('5.\u0110\u1ecba ch\u1ec9 IP \u0111\u00edch')
+        souPort5 = answers.get('5.C\u1ed5ng ngu\u1ed3n')
+        desPort5 = answers.get('5.C\u1ed5ng \u0111\u00edch')
+        seq5 = answers.get('5.Sequence number')
+        ack5 = answers.get('5.Ack number')
+        lenghttcp5 = answers.get('5.K\u00edch th\u01b0\u1edbc ph\u1ea7n ti\u00eau \u0111\u1ec1')
+        lenghtdata5 = answers.get('5.K\u00edch th\u01b0\u1edbc ph\u1ea7n d\u1eef li\u1ec7u')
+        flag5 = answers.get('5 .C\u00e1c c\u1edd thi\u1ebft l\u1eadp')
+        success5 = int(answers.get('5.K\u1ebft lu\u1eadn') or -1)
+
+        if stt5 == '':
+            stt5 = -1
+        if souPort5 == '':
+            souPort5 = -1
+        if desPort5 == '':
+            desPort5 = -1
+        if seq5 == '':
+            seq5 = -1
+        if ack5 == '':
+            ack5 = -1
+        if lenghttcp5 == '':
+            lenghttcp5 = -1
+        if lenghtdata5 == '':
+            lenghtdata5 = -1
+        if success5 is None:
+            success5 = -1
+
+        # c6
+        seq6 = answers.get('6.Sequence number')
+
+        if seq6 == '':
+            seq6 = -1
+
+        #c7
+        stt7 = answers.get('7.S\u1ed1 th\u1ee9 t\u1ef1 g\u00f3i tin')
+        nhiphan7 = answers.get('7.Gi\u00e1 tr\u1ecb nh\u1ecb ph\u00e2n tr\u01b0\u1eddng Flag')
+        flag7 = answers.get('7.C\u00e1c c\u1edd thi\u1ebft l\u1eadp')
+        seq7 = answers.get('7.Sequence number')
+        ack7 = answers.get('7.Ack number')
+        lenghtdata7 = answers.get('7.K\u00edch th\u01b0\u1edbc ph\u1ea7n d\u1eef li\u1ec7u')
+
+        if stt7 == '':
+            stt7 = -1
+        if seq7 == '':
+            seq7 = -1
+        if ack7 == '':
+            ack7 = -1
+        if lenghtdata7 == '':
+            lenghtdata7 = -1
+
+        #c8
+        bps8 = (answers.get('8.Th\u00f4ng l\u01b0\u1ee3ng trung b\u00ecnh') or -111)
+
+        score = 0
+        start_syn3 = True
+        start_synack3 = True
+        start_ack3 = True
+        start_stt4 = 99999999
+        start_stt5 = True
+        start_ack5 = -98989898
+        start_stt6 = True
+        start_stt7 = True
+        max_bps = 0
+
+        for packet in packets:
+            j_stt = packet.get('stt')
+            j_src_ip = packet.get('src_ip')
+            j_dst_ip = packet.get('dst_ip')
+            j_src_port = packet.get('src_port')
+            j_dst_port = packet.get('dst_port')
+            j_protocol = packet.get('protocol')
+            j_payload = packet.get('payload')
+            j_payload = str(j_payload)
+            j_seq = packet.get('seq')
+            j_ack = packet.get('ack')
+            j_lenght_payload = packet.get('lenght_payload')
+            j_fin = packet.get('fin')
+            j_bps = packet.get('bps')
+            j_syn = packet.get('syn')
+            
+            # c1, c2  
+            if int(stt) == j_stt and j_protocol == 'UDP':
+                print('j_stt', j_stt)
+                print('j_src_ip', j_src_ip)
+                print('j_dst_ip', j_dst_ip)
+                print('j_src_port', j_src_port)
+                print('j_dst_port', j_dst_port)
+                print('j_protocol', j_protocol)
+                print('j_floor', floor)
+                # c1
+                if souIP == j_src_ip:
+                    # souIP += '✔'
+                    score += 0.4
+                if desIP == j_dst_ip:
+                    # desIP += '✔'
+                    score += 0.4
+                if int(souPort) == j_src_port:
+                    # souPort += '✔'
+                    score += 0.4
+                if int(desPort) == j_dst_port:
+                    # desPort += '✔'
+                    score += 0.4
+                if floor == 'UDP':
+                    # floor += '✔'
+                    score += 0.4
+
+                # c2
+                dst_packet_c1_stt = 0
+                for dst_packet in packets:
+                    if int(dst_packet.get('stt')) < int(stt):
+                        continue
+                    if j_src_ip == dst_packet.get('dst_ip') and j_dst_ip == dst_packet.get('src_ip') and dst_packet.get('protocol') == 'UDP':
+                        dst_packet_c1_stt = dst_packet.get('stt')
+                        break
+                if int(stt2) == int(dst_packet_c1_stt):
+                    # stt2 += '✔'
+                    score += 0.25
+                if int(success2) == 0:
+                    # success2 += '✔'
+                    score += 0.25
+
+            #c3
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_syn3 and j_syn == 1:
+                start_syn3 = False
+                if souIP3 == j_src_ip:
+                    # souIP3 += '✔'
+                    score += 0.25
+                if desIP3 == '202.191.56.66':
+                    # desIP3 += '✔'
+                    score += 0.25
+                if souPort3 == j_src_port:
+                    # souPort3 += '✔'
+                    score += 0.25
+                if desPort3 == j_dst_port:
+                    # desPort3 += '✔'
+                    score += 0.25
+                if stt31 == j_stt and nhiphan31 == '000000000010' and flag31 == 'SYN' and seq31 == j_seq and ack31 == 0 and lenghtdata31 == 0:
+                    # stt31 += '✔'
+                    score += 0.5
+                
+            if j_protocol == 'TCP' and j_src_ip == '202.191.56.66' and start_synack3 and j_syn == 2:
+                start_synack3 = False
+                if stt32 == j_stt and nhiphan32 == '000000010010' and 'SYN' in flag32 and 'ACK' in flag32 and seq32 == j_seq and ack32 == 1 and lenghtdata32 == 0:
+                    score += 0.5
+                    # stt32 += '✔'
+            
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66' and start_ack3 and (not start_synack3):
+                start_ack3 = False
+                if stt33 == j_stt and nhiphan33 == '000000000010' and flag33 == 'ACK' and seq33 == j_seq and ack32 == 1 and lenghtdata33 == 0:
+                    score += 0.5
+                    # stt33 += '✔'
+
+            # c4
+            if j_protocol == 'TCP' and j_dst_ip == '202.191.56.66':
+                strpayload = "414c49434527532041" # ALICE'S A
+                if strpayload in j_payload:
+                    if int(stt4) == j_stt:
+                        # stt4 += '✔'
+                        score += 0.2
+                    if souIP4 == j_src_ip:   
+                        # souIP4 += '✔' 
+                        score += 0.1
+                    if desIP4 == '202.191.56.66':
+                        # desIP4 += '✔'
+                        score += 0.1
+                    if int(souPort4) == j_src_port:
+                        # souPort4 += '✔'
+                        score += 0.2
+                    if int(desPort4) == j_dst_port:
+                        # desPort4 += '✔'
+                        score += 0.2
+                    if int(seq4) == j_seq:
+                        # seq4 += '✔'
+                        score += 0.2
+                    if int(ack4) == 1:
+                        # ack4 += '✔'
+                        score += 0.2
+                    if int(lenghttcp4) == 20:
+                        # lenghttcp4 += '✔'
+                        score += 0.2
+                    if int(lenghtdata4) == j_lenght_payload:
+                        # lenghtdata4 += '✔'
+                        score += 0.2
+                    if flag4 == 'ACK':
+                        # flag4 += '✔'
+                        score += 0.2
+                    if int(floor4) == 2:
+                        # floor4 += '✔'
+                        score += 0.2
+                    
+                    start_stt4 = j_stt
+                    start_ack5 = j_seq
+
+            # c5
+            if j_stt > start_stt4 and start_stt5:
+                if j_src_ip == '202.191.56.66' and j_protocol == 'TCP':
+                    print(j_stt)
+                    start_stt5 = False
+                    if int(stt5) == j_stt:
+                        # stt5 += '✔'
+                        score += 0.2
+                    if souIP5 == j_src_ip:    
+                        # souIP5 += '✔'
+                        score += 0.1
+                    if desIP5 == j_dst_ip:
+                        # desIP5 += '✔'
+                        score += 0.1
+                    if int(souPort5) == j_src_port:
+                        # souPort5 += '✔'
+                        score += 0.2
+                    if int(desPort5) == j_dst_port:
+                        # desPort5 += '✔'
+                        score += 0.2
+                    if int(seq5) == j_seq:
+                        # seq5 += '✔'
+                        score += 0.2
+                    if int(ack5) == start_ack5:
+                        # ack5 += '✔'
+                        score += 0.2
+                    if int(lenghttcp5) == 20:
+                        # lenghttcp5 += '✔'
+                        score += 0.2
+                    if int(lenghtdata5) == 0:
+                        # lenghtdata5 += '✔'
+                        score += 0.2
+                    if flag5 == 'ACK':
+                        # flag5 += '✔'
+                        score += 0.2
+                    if int(success5) == 1:
+                        # success5 += '✔'
+                        score += 0.2
+                    
+            # c6
+            if j_stt > start_stt4 and start_stt6:
+                if j_dst_ip == '202.191.56.66' and j_protocol == 'TCP':
+                    print(j_stt)
+                    start_stt6 = False
+                    if int(seq6) == j_seq:
+                        # seq6 += '✔'
+                        score += 1
+            
+            # c7
+            if j_stt > start_stt4 and start_stt7:
+                if j_fin == 1:
+                    print(j_stt)
+                    start_stt7 = False
+                    if int(stt7) == j_stt:
+                        # stt7 += '✔'
+                        score += 0.2
+                    if nhiphan7 == '000000010001':
+                        # nhiphan7 += '✔'
+                        score += 0.2
+                    if ('FIN' in flag7) and ('ACK' in flag7):
+                        # flag7 += '✔'
+                        score += 0.2
+                    if int(seq7) == j_seq:
+                        # seq7 += '✔'
+                        score += 0.2
+                    
+                    if int(lenghtdata7) == 0:
+                        # lenghtdata7 += '✔'
+                        score += 0.2
+
+            #8
+            if j_bps > max_bps:
+                max_bps = j_bps
+            if max_bps == bps8:
+                # bp8 += '✔'
+                score += 0.5
     else:
         exercise_type = ''
 
